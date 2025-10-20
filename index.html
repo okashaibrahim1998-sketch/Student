@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل طالب جديد</title>
+    <!-- Load Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Lucide Icons for use in JS -->
+    <script type="module">
+        import { createIcons, Upload, User, Mail, Phone, MapPin, Calendar, FileText, CheckCircle, AlertCircle, X } from 'https://cdn.skypack.dev/lucide-react';
+        window.lucide = { Upload, User, Mail, Phone, MapPin, Calendar, FileText, CheckCircle, AlertCircle, X };
+        // Note: Actual icon injection will be handled manually since we are not using React.
+    </script>
+    <style>
+        /* Custom styles for the document body and font */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        /* Style for date input to show placeholder in Arabic environment */
+        input[type="date"]::-webkit-datetime-edit {
+            color: #9ca3af; /* Matches gray-400 */
+        }
+        input[type="date"]:focus::-webkit-datetime-edit {
+            color: #1f2937; /* Matches gray-800 */
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <div id="app-container" class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4">
+        <div id="main-content" class="max-w-4xl mx-auto">
+            
+            <!-- Title and Header -->
+            <div class="text-center mb-10">
+                <div class="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </div>
+                <h1 class="text-4xl font-extrabold text-gray-800 mb-2">تسجيل طالب جديد</h1>
+                <p class="text-gray-600">أكمل البيانات التالية لإتمام عملية التسجيل والقبول</p>
+            </div>
+
+            <form id="registration-form" class="bg-white rounded-2xl shadow-2xl p-8 lg:p-10">
+                
+                <!-- Global Submission Error Placeholder -->
+                <div id="submit-error" class="hidden mb-6 bg-red-50 border-r-4 border-red-500 p-4 rounded-lg items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-500 mt-0.5 ml-3 flex-shrink-0"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                    <p id="submit-error-message" class="text-red-700 font-medium"></p>
+                </div>
+
+                <!-- Section 1: Personal Data -->
+                <div class="mb-10 border-b pb-8 border-gray-200">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 ml-2 text-blue-600"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        البيانات الشخصية
+                    </h2>
+
+                    <!-- Full Name -->
+                    <div class="mb-6" id="field-fullName">
+                        <label for="fullName" class="block text-gray-700 font-semibold mb-2">
+                            الاسم الكامل <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="fullName" name="fullName" onInput="handleChange(event)" maxlength="255"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                            placeholder="أحمد محمد حسن" />
+                        <p id="error-fullName" class="text-red-500 text-sm mt-2 flex items-center font-medium hidden">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 ml-1"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                            <span></span>
+                        </p>
+                        <p class="text-gray-500 text-xs mt-1">الحد الأقصى 255 حرف</p>
+                    </div>
+
+                    <!-- National ID -->
+                    <div class="mb-6" id="field-nationalId">
+                        <label for="nationalId" class="block text-gray-700 font-semibold mb-2">
+                            الرقم القومي <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="nationalId" name="nationalId" onInput="handleChange(event)" maxlength="14"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                            placeholder="29501234567891" />
+                        <p id="error-nationalId" class="text-red-500 text-sm mt-2 flex items-center font-medium hidden">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 ml-1"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                            <span></span>
+                        </p>
+                        <p class="text-gray-500 text-xs mt-1">يجب أن يكون 14 رقمًا</p>
+                    </div>
+
+                    <!-- Phone & Email -->
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div id="field-phoneNumber">
+                            <label for="phoneNumber" class="block text-gray-700 font-semibold mb-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 inline ml-1"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 3.08 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                                رقم الهاتف <span class="text-red-500">*</span>
+                            </label>
+                            <input type="tel" id="phoneNumber" name="phoneNumber" onInput="handleChange(event)"
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                                placeholder="+20 1012345678" />
+                            <p id="error-phoneNumber" class="text-red-500 text-sm mt-2 flex items-center font-medium hidden">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 ml-1"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                                <span></span>
+                            </p>
+                        </div>
+
+                        <div id="field-email">
+                            <label for="email" class="block text-gray-700 font-semibold mb-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 inline ml-1"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                                البريد الإلكتروني <span class="text-red-500">*</span>
+                            </label>
+                            <input type="email" id="email" name="email" onInput="handleChange(event)"
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                                placeholder="ahmed@email.com" />
+                            <p id="error-email" class="text-red-500 text-sm mt-2 flex items-center font-medium hidden">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 ml-1"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                                <span></span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Date of Birth -->
+                    <div class="mb-6">
+                        <label for="dateOfBirth" class="block text-gray-700 font-semibold mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 inline ml-1"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                            تاريخ الميلاد
+                        </label>
+                        <input type="date" id="dateOfBirth" name="dateOfBirth" onInput="handleChange(event)"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" />
+                    </div>
+
+                    <!-- Address -->
+                    <div class="mb-6" id="field-address">
+                        <label for="address" class="block text-gray-700 font-semibold mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 inline ml-1"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                            العنوان
+                        </label>
+                        <textarea id="address" name="address" onInput="handleChange(event)" rows="3" maxlength="255"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                            placeholder="123 شارع الجامعة، الدقي، القاهرة"></textarea>
+                        <p id="error-address" class="text-red-500 text-sm mt-2 font-medium hidden"></p>
+                        <p class="text-gray-500 text-xs mt-1">الحد الأقصى 255 حرف</p>
+                    </div>
+                </div>
+
+                <!-- Section 2: Academic & Documents -->
+                <div class="mb-10 pb-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 ml-2 text-blue-600"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="8" x2="16" y1="13" y2="13"/><line x1="8" x2="16" y1="17" y2="17"/><line x1="8" x2="12" y1="9" y2="9"/></svg>
+                        الوثائق والمستندات
+                    </h2>
+
+                    <!-- Previous Certificates Radio Button -->
+                    <div class="mb-8" id="field-hasCertificates">
+                        <label class="block text-gray-700 font-semibold mb-3">
+                            هل لديك شهادات سابقة؟ <span class="text-red-500">*</span>
+                        </label>
+                        <div class="flex gap-8">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="hasCertificates" value="yes" onInput="handleChange(event)"
+                                    class="w-5 h-5 text-blue-600 ml-2" />
+                                <span class="text-gray-700 font-medium">نعم</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="hasCertificates" value="no" onInput="handleChange(event)"
+                                    class="w-5 h-5 text-blue-600 ml-2" />
+                                <span class="text-gray-700 font-medium">لا</span>
+                            </label>
+                        </div>
+                        <p id="error-hasCertificates" class="text-red-500 text-sm mt-2 flex items-center font-medium hidden">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 ml-1"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                            <span></span>
+                        </p>
+                    </div>
+
+                    <!-- Conditional Certificate File Upload -->
+                    <div id="certificate-upload-section" class="mb-8 hidden p-4 border border-blue-200 rounded-lg bg-blue-50">
+                        <label class="block text-gray-700 font-semibold mb-3">
+                            إرفاق الشهادة المطلوبة <span class="text-red-500">*</span>
+                        </label>
+                        
+                        <div id="certificate-uploader">
+                            <div class="border-2 border-dashed border-blue-400 rounded-lg p-6 text-center bg-white hover:border-blue-600 transition-colors cursor-pointer">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-10 h-10 text-blue-500 mx-auto mb-3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                                <p class="text-gray-600 mb-2">اسحب الملف هنا أو</p>
+                                <label class="inline-block bg-blue-600 text-white px-5 py-2 rounded-full shadow-md cursor-pointer hover:bg-blue-700 transition-colors text-sm font-medium">
+                                    اختر ملف
+                                    <input type="file" id="certificate-input" accept=".pdf,.jpg,.jpeg,.png" onInput="handleFileUpload(event, 'certificate')" class="hidden" />
+                                </label>
+                                <p class="text-gray-500 text-xs mt-3">PDF, JPG, PNG (حتى 5 ميجا)</p>
+                            </div>
+                        </div>
+                        
+                        <div id="certificate-preview" class="hidden flex items-center justify-between bg-white p-4 rounded-lg shadow-sm border border-gray-300">
+                            <div class="flex items-center truncate">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-blue-600 ml-3 flex-shrink-0"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="8" x2="16" y1="13" y2="13"/><line x1="8" x2="16" y1="17" y2="17"/><line x1="8" x2="12" y1="9" y2="9"/></svg>
+                                <span id="certificate-name" class="text-gray-700 font-medium truncate"></span>
+                            </div>
+                            <button type="button" onclick="removeFile('certificate')" class="text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-50 transition-colors flex-shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                            </button>
+                        </div>
+
+                        <p id="error-certificate" class="text-red-500 text-sm mt-2 flex items-center font-medium hidden">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 ml-1"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                            <span></span>
+                        </p>
+                    </div>
+
+                    <!-- Picture Upload -->
+                    <div class="mb-8 pt-4">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">الصورة الشخصية (اختياري)</h3>
+                        
+                        <div class="flex flex-col sm:flex-row items-start gap-6 p-4 border border-gray-200 rounded-lg bg-gray-50">
+                            <div class="flex-shrink-0">
+                                <div id="picture-preview-box" class="w-28 h-28 border-2 border-gray-300 rounded-lg overflow-hidden bg-white shadow-inner flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-12 h-12 text-gray-400"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                </div>
+                            </div>
+
+                            <div class="flex-1 w-full">
+                                <label class="block text-gray-700 font-semibold mb-3">
+                                    رفع صورة شخصية (JPG)
+                                </label>
+                                <div class="flex gap-3">
+                                    <label class="bg-gray-300 text-gray-700 px-5 py-2.5 rounded-lg cursor-pointer hover:bg-gray-400 transition-colors inline-flex items-center text-sm font-medium shadow-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 ml-2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                                        <span id="picture-upload-text">اختر صورة</span>
+                                        <input type="file" id="picture-input" accept=".jpg,.jpeg" onInput="handleFileUpload(event, 'picture')" class="hidden" />
+                                    </label>
+                                    <button type="button" id="picture-remove-btn" onclick="removeFile('picture')" class="hidden bg-red-50 text-red-600 px-4 py-2.5 rounded-lg hover:bg-red-100 transition-colors text-sm font-medium shadow-sm">
+                                        إزالة
+                                    </button>
+                                </div>
+                                <p class="text-gray-500 text-xs mt-2">JPG فقط (حتى 2 ميجا). صورة واضحة للوجه.</p>
+                                <p id="error-picture" class="text-red-500 text-sm mt-2 flex items-center font-medium hidden">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 ml-1"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                                    <span></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submission Buttons -->
+                <div class="flex flex-col-reverse sm:flex-row gap-4 pt-6">
+                    <button type="button" onclick="window.location.reload()"
+                        class="sm:w-1/3 bg-gray-200 text-gray-700 py-4 rounded-lg hover:bg-gray-300 transition-colors font-semibold shadow-md">
+                        إلغاء
+                    </button>
+                    <button type="submit" id="submit-button" onclick="handleSubmit(event)"
+                        class="sm:w-2/3 bg-blue-600 text-white py-4 rounded-lg transition-colors font-bold flex items-center justify-center shadow-lg transform hover:scale-[1.01] hover:bg-blue-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 ml-2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+                        إرسال طلب التسجيل
+                    </button>
+                </div>
+
+                <p class="text-center text-gray-500 text-sm mt-6">
+                    <span class="text-red-500">*</span> الحقول المطلوبة
+                </p>
+            </form>
+        </div>
+
+        <!-- Success Modal Placeholder -->
+        <div id="success-view" class="hidden min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
+                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-12 h-12 text-green-600"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+                </div>
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">تم التسجيل بنجاح!</h2>
+                <p class="text-gray-600 mb-6">
+                    تم إرسال طلب التسجيل الخاص بك بنجاح. سيتم مراجعته من قبل الإدارة وسوف تصلك رسالة على البريد الإلكتروني بحالة الطلب.
+                </p>
+                <div class="bg-blue-50 rounded-lg p-4 mb-6">
+                    <p class="text-sm text-gray-600 mb-2">رقم الطالب الفريد</p>
+                    <p id="final-student-id" class="text-2xl font-bold text-blue-600">STU-2025-XXXXX</p>
+                </div>
+                <button
+                    onclick="window.location.reload()"
+                    class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold shadow-md"
+                >
+                    تسجيل طالب جديد
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State management object
+        const state = {
+            formData: {
+                fullName: '',
+                nationalId: '',
+                phoneNumber: '',
+                email: '',
+                dateOfBirth: '',
+                address: '',
+                hasCertificates: '',
+                certificate: null,
+                picture: null
+            },
+            errors: {},
+            isSubmitting: false,
+            studentId: ''
+        };
+
+        // DOM elements cache
+        const dom = {};
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Cache necessary DOM elements on load
+            dom.form = document.getElementById('registration-form');
+            dom.submitBtn = document.getElementById('submit-button');
+            dom.mainContent = document.getElementById('main-content');
+            dom.successView = document.getElementById('success-view');
+            dom.certificateSection = document.getElementById('certificate-upload-section');
+            dom.certificateUploader = document.getElementById('certificate-uploader');
+            dom.certificatePreview = document.getElementById('certificate-preview');
+            dom.certificateName = document.getElementById('certificate-name');
+            dom.picturePreviewBox = document.getElementById('picture-preview-box');
+            dom.pictureRemoveBtn = document.getElementById('picture-remove-btn');
+            dom.pictureUploadText = document.getElementById('picture-upload-text');
+            dom.submitError = document.getElementById('submit-error');
+            dom.finalStudentId = document.getElementById('final-student-id');
+        });
+
+
+        // --- UI Utility Functions ---
+
+        function getInputElement(name) {
+            return dom.form.querySelector(`[name="${name}"]`);
+        }
+
+        function toggleError(fieldName, message) {
+            const inputElement = getInputElement(fieldName);
+            const errorElement = document.getElementById(`error-${fieldName}`);
+            
+            if (!inputElement || !errorElement) return;
+
+            if (message) {
+                // Show error
+                inputElement.classList.add('border-red-500', 'bg-red-50');
+                inputElement.classList.remove('border-gray-300');
+                errorElement.classList.remove('hidden');
+                errorElement.querySelector('span').textContent = message;
+            } else {
+                // Hide error
+                inputElement.classList.remove('border-red-500', 'bg-red-50');
+                inputElement.classList.add('border-gray-300');
+                errorElement.classList.add('hidden');
+                errorElement.querySelector('span').textContent = '';
+            }
+        }
+
+        function updateSubmitButton() {
+            dom.submitBtn.disabled = state.isSubmitting;
+            const btnText = dom.submitBtn.querySelector('span') || dom.submitBtn;
+
+            if (state.isSubmitting) {
+                dom.submitBtn.innerHTML = `
+                    <div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin ml-2"></div>
+                    جاري التسجيل...
+                `;
+                dom.submitBtn.classList.add('opacity-50', 'cursor-not-allowed', 'bg-blue-500');
+                dom.submitBtn.classList.remove('hover:bg-blue-700', 'transform', 'hover:scale-[1.01]');
+            } else {
+                dom.submitBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 ml-2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+                    إرسال طلب التسجيل
+                `;
+                dom.submitBtn.classList.remove('opacity-50', 'cursor-not-allowed', 'bg-blue-500');
+                dom.submitBtn.classList.add('hover:bg-blue-700', 'transform', 'hover:scale-[1.01]');
+            }
+        }
+
+        function setGlobalError(message) {
+            const msgElement = document.getElementById('submit-error-message');
+            if (message) {
+                dom.submitError.classList.remove('hidden');
+                dom.submitError.classList.add('flex');
+                msgElement.textContent = message;
+            } else {
+                dom.submitError.classList.add('hidden');
+                dom.submitError.classList.remove('flex');
+                msgElement.textContent = '';
+            }
+        }
+
+        // --- Core Validation Functions ---
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function validateNationalId(id) {
+            return /^\d{14}$/.test(id);
+        }
+
+        function validatePhone(phone) {
+            return /^(\+?20)?[0-9]{10,11}$/.test(phone.replace(/\s/g, ''));
+        }
+
+        function validateForm() {
+            let isValid = true;
+            const newErrors = {};
+
+            // Clear previous errors
+            Object.keys(state.errors).forEach(key => toggleError(key, ''));
+            state.errors = {};
+
+            // Full Name Validation
+            if (!state.formData.fullName.trim()) {
+                newErrors.fullName = 'Err_4: هذا الحقل مطلوب';
+            } else if (state.formData.fullName.length > 255) {
+                newErrors.fullName = 'Err_1: الاسم يجب أن يكون أقل من 255 حرف';
+            }
+
+            // National ID Validation
+            if (!state.formData.nationalId.trim()) {
+                newErrors.nationalId = 'Err_4: هذا الحقل مطلوب';
+            } else if (!validateNationalId(state.formData.nationalId)) {
+                newErrors.nationalId = 'Err_1: الرقم القومي غير صحيح. يجب أن يكون 14 رقمًا.';
+            }
+
+            // Phone Number Validation
+            if (!state.formData.phoneNumber.trim()) {
+                newErrors.phoneNumber = 'Err_4: هذا الحقل مطلوب';
+            } else if (!validatePhone(state.formData.phoneNumber)) {
+                newErrors.phoneNumber = 'Err_1: رقم الهاتف غير صحيح';
+            }
+
+            // Email Validation
+            if (!state.formData.email.trim()) {
+                newErrors.email = 'Err_4: هذا الحقل مطلوب';
+            } else if (!validateEmail(state.formData.email)) {
+                newErrors.email = 'Err_1: البريد الإلكتروني غير صحيح';
+            }
+
+            // Certificates Radio Button Validation
+            if (!state.formData.hasCertificates) {
+                newErrors.hasCertificates = 'Err_4: هذا الحقل مطلوب';
+            }
+
+            // Conditional Certificate File Validation
+            if (state.formData.hasCertificates === 'yes' && !state.formData.certificate) {
+                newErrors.certificate = 'Err_4: يجب إرفاق الشهادة';
+            }
+
+            // Address Validation (Optional length check)
+            if (state.formData.address && state.formData.address.length > 255) {
+                newErrors.address = 'Err_1: العنوان يجب أن يكون أقل من 255 حرف';
+            }
+            
+            // Apply new errors
+            state.errors = newErrors;
+            Object.keys(newErrors).forEach(key => toggleError(key, newErrors[key]));
+
+            return Object.keys(newErrors).length === 0;
+        }
+
+
+        // --- Event Handlers (Global Scope) ---
+
+        window.handleChange = function(e) {
+            const { name, value, type, checked } = e.target;
+            
+            if (type === 'radio') {
+                state.formData[name] = checked ? value : state.formData[name];
+                // Hide/show conditional section immediately
+                if (name === 'hasCertificates') {
+                    if (value === 'yes' && checked) {
+                        dom.certificateSection.classList.remove('hidden');
+                    } else if (value === 'no' && checked) {
+                        dom.certificateSection.classList.add('hidden');
+                        // If user selects NO, clear and reset certificate field (in case they previously selected YES)
+                        removeFile('certificate');
+                    }
+                }
+            } else {
+                state.formData[name] = value;
+            }
+
+            // Clear single error field when user types
+            if (state.errors[name]) {
+                toggleError(name, '');
+                delete state.errors[name];
+            }
+        }
+
+        window.handleFileUpload = function(e, type) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // Clear previous size/type errors for this field
+            toggleError(type, '');
+
+            if (type === 'certificate') {
+                if (file.size > 5 * 1024 * 1024) { // 5 MB limit
+                    toggleError(type, 'حجم الملف يجب أن يكون أقل من 5 ميجا');
+                    return;
+                }
+                state.formData.certificate = file;
+                dom.certificateUploader.classList.add('hidden');
+                dom.certificatePreview.classList.remove('hidden');
+                dom.certificateName.textContent = file.name;
+            } else if (type === 'picture') {
+                if (!file.type.includes('jpeg') && !file.type.includes('jpg')) {
+                    toggleError(type, 'يجب أن تكون الصورة بصيغة JPG فقط');
+                    return;
+                }
+                if (file.size > 2 * 1024 * 1024) { // 2 MB limit
+                    toggleError(type, 'حجم الصورة يجب أن يكون أقل من 2 ميجا');
+                    return;
+                }
+                
+                state.formData.picture = file;
+                dom.pictureRemoveBtn.classList.remove('hidden');
+                dom.pictureUploadText.textContent = 'تغيير الصورة';
+
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    dom.picturePreviewBox.innerHTML = `<img src="${reader.result}" alt="Preview" class="w-full h-full object-cover" />`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        window.removeFile = function(type) {
+            if (type === 'certificate') {
+                state.formData.certificate = null;
+                dom.certificatePreview.classList.add('hidden');
+                dom.certificateUploader.classList.remove('hidden');
+                document.getElementById('certificate-input').value = null; // Reset file input
+                toggleError('certificate', '');
+            } else if (type === 'picture') {
+                state.formData.picture = null;
+                dom.picturePreviewBox.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-12 h-12 text-gray-400"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                `;
+                dom.pictureRemoveBtn.classList.add('hidden');
+                dom.pictureUploadText.textContent = 'اختر صورة';
+                document.getElementById('picture-input').value = null; // Reset file input
+                toggleError('picture', '');
+            }
+        }
+
+        window.handleSubmit = async function(e) {
+            e.preventDefault();
+            setGlobalError(''); // Clear global error on new attempt
+
+            if (!validateForm()) {
+                window.scrollTo(0, 0); // Scroll to top to see global/first errors
+                return;
+            }
+
+            state.isSubmitting = true;
+            updateSubmitButton();
+
+            // --- MOCK API CALL SIMULATION ---
+            await new Promise(resolve => setTimeout(resolve, 1500)); 
+
+            try {
+                // Simulate successful submission and unique ID generation
+                const mockResponse = { ok: true, studentId: 'STU-' + Math.floor(Math.random() * 100000) };
+                
+                if (mockResponse.ok) {
+                    state.studentId = mockResponse.studentId;
+                    showSuccessView();
+                } else {
+                    // Simulate an API-level error (e.g., duplicate ID detected)
+                    setGlobalError('Err_1: بيانات غير صحيحة، يرجى مراجعة الحقول المدخلة.');
+                }
+            } catch (error) {
+                setGlobalError('خطأ في الاتصال بالخادم.');
+            } finally {
+                state.isSubmitting = false;
+                updateSubmitButton();
+            }
+        }
+        
+        // --- View Switching ---
+
+        function showSuccessView() {
+            dom.mainContent.classList.add('hidden');
+            dom.successView.classList.remove('hidden');
+            dom.successView.classList.add('flex');
+            dom.finalStudentId.textContent = state.studentId;
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>
