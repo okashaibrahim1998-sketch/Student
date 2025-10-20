@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل دخول الطالب</title>
+    <!-- Load Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for the document body and font */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+
+    <div id="login-container" class="max-w-md w-full">
+        
+        <!-- Header & Branding -->
+        <div class="text-center mb-10">
+            <div class="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <!-- User Icon (similar to Lucide) -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <h1 class="text-4xl font-extrabold text-gray-800 mb-2">تسجيل دخول الطالب</h1>
+            <p class="text-gray-600">أدخل بيانات الاعتماد للوصول إلى خدمات الكلية</p>
+        </div>
+
+        <form id="login-form" class="bg-white rounded-2xl shadow-2xl p-8 lg:p-10">
+
+            <!-- Global Error Banner Placeholder -->
+            <div id="global-error" class="hidden mb-6 p-4 rounded-lg flex items-start" role="alert">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 ml-3 flex-shrink-0 text-red-600"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                <p id="global-error-message" class="font-medium text-red-800"></p>
+            </div>
+            
+            <!-- Account Lock Message Placeholder -->
+            <div id="lock-message" class="hidden mb-6 p-4 rounded-lg flex items-start bg-yellow-100 border-r-4 border-yellow-500" role="status">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 ml-3 flex-shrink-0 text-yellow-600"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <p id="lock-message-text" class="font-medium text-yellow-800">
+                    تم إيقاف حسابك مؤقتاً بسبب محاولات تسجيل الدخول الفاشلة المتعددة. يرجى المحاولة بعد 60 ثانية.
+                </p>
+            </div>
+
+            <!-- Email Field -->
+            <div class="mb-6" id="field-email">
+                <label for="email" class="block text-gray-700 font-semibold mb-2">
+                    البريد الإلكتروني <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                    <input type="email" id="email" name="email" onInput="handleChange(event)"
+                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all pr-12"
+                        placeholder="example@student.edu" />
+                    <span class="absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400">
+                        <!-- Mail Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                    </span>
+                </div>
+                <p id="error-email" class="text-red-500 text-sm mt-2 flex items-center font-medium hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 ml-1"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                    <span></span>
+                </p>
+            </div>
+
+            <!-- Password Field -->
+            <div class="mb-4" id="field-password">
+                <label for="password" class="block text-gray-700 font-semibold mb-2">
+                    كلمة المرور <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                    <input type="password" id="password" name="password" onInput="handleChange(event)"
+                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all pr-12"
+                        placeholder="****************" />
+                    <span class="absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400">
+                        <!-- Lock Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    </span>
+                    <button type="button" onclick="togglePasswordVisibility()" class="absolute top-1/2 transform -translate-y-1/2 right-3 text-gray-500 hover:text-blue-600 transition-colors p-1">
+                        <!-- Eye Icon (placeholder) -->
+                        <svg id="toggle-password-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
+                </div>
+                <p id="error-password" class="text-red-500 text-sm mt-2 flex items-center font-medium hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 ml-1"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                    <span></span>
+                </p>
+            </div>
+            
+            <!-- Forgot Password Link -->
+            <div class="flex justify-end mb-8">
+                <a href="#" class="text-sm text-blue-600 hover:text-blue-800 transition-colors font-medium">
+                    هل نسيت كلمة المرور؟
+                </a>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="submit-button" onclick="handleSubmit(event)"
+                class="w-full bg-blue-600 text-white py-3 rounded-lg transition-colors font-bold flex items-center justify-center shadow-lg transform hover:scale-[1.01] hover:bg-blue-700">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 ml-2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+                تسجيل الدخول
+            </button>
+        </form>
+    </div>
+    
+    <!-- Success Page Placeholder -->
+    <div id="success-view" class="hidden min-h-screen bg-green-50 flex items-center justify-center p-4 absolute inset-0 z-10">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
+            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-12 h-12 text-green-600"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+            </div>
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">تم تسجيل الدخول بنجاح!</h2>
+            <p class="text-gray-600 mb-6">
+                جارٍ توجيهك إلى لوحة التحكم الخاصة بك...
+            </p>
+            <button onclick="window.location.reload()" class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold shadow-md">
+                الانتقال إلى لوحة التحكم
+            </button>
+        </div>
+    </div>
+
+
+    <script>
+        // State management object
+        const state = {
+            formData: {
+                email: '',
+                password: ''
+            },
+            errors: {},
+            isSubmitting: false,
+            failedAttempts: 0,
+            isLocked: false,
+            lockStartTime: 0
+        };
+
+        // DOM elements cache
+        const dom = {};
+
+        document.addEventListener('DOMContentLoaded', () => {
+            dom.form = document.getElementById('login-form');
+            dom.submitBtn = document.getElementById('submit-button');
+            dom.emailInput = document.getElementById('email');
+            dom.passwordInput = document.getElementById('password');
+            dom.globalError = document.getElementById('global-error');
+            dom.globalErrorMessage = document.getElementById('global-error-message');
+            dom.lockMessage = document.getElementById('lock-message');
+            dom.loginContainer = document.getElementById('login-container');
+            dom.successView = document.getElementById('success-view');
+
+            // Initialize event listener for lock timer
+            setInterval(checkLockStatus, 1000);
+        });
+
+        const LOCK_DURATION_MS = 60000; // 60 seconds
+
+        // --- UI Utility Functions ---
+
+        function getInputElement(name) {
+            return dom.form.querySelector(`[name="${name}"]`);
+        }
+
+        function toggleError(fieldName, message) {
+            const inputElement = getInputElement(fieldName);
+            const errorElement = document.getElementById(`error-${fieldName}`);
+            
+            if (!inputElement || !errorElement) return;
+
+            if (message) {
+                // Show error
+                inputElement.classList.add('border-red-500', 'bg-red-50');
+                inputElement.classList.remove('border-gray-300');
+                errorElement.classList.remove('hidden');
+                errorElement.querySelector('span').textContent = message;
+            } else {
+                // Hide error
+                inputElement.classList.remove('border-red-500', 'bg-red-50');
+                inputElement.classList.add('border-gray-300');
+                errorElement.classList.add('hidden');
+                errorElement.querySelector('span').textContent = '';
+            }
+        }
+
+        function setGlobalError(message, errorCode = 'error') {
+            if (message) {
+                dom.globalError.classList.remove('hidden');
+                dom.globalError.classList.add('flex');
+                
+                // Clear existing error style and set new one based on code
+                dom.globalError.classList.remove('bg-red-50', 'border-r-4', 'border-red-500', 'bg-yellow-50', 'border-yellow-500', 'bg-gray-100', 'border-gray-500');
+
+                if (errorCode === 'err_02') { // Under Review
+                    dom.globalError.classList.add('bg-yellow-50', 'border-r-4', 'border-yellow-500');
+                    dom.globalErrorMessage.textContent = `حسابك قيد المراجعة حاليًا. (${errorCode})`;
+                } else if (errorCode === 'err_03') { // Rejected
+                    dom.globalError.classList.add('bg-gray-100', 'border-r-4', 'border-gray-500');
+                    dom.globalErrorMessage.textContent = `تم رفض طلب تسجيلك. يرجى التواصل مع الإدارة. (${errorCode})`;
+                } else { // err_01 or general error
+                    dom.globalError.classList.add('bg-red-50', 'border-r-4', 'border-red-500');
+                    dom.globalErrorMessage.textContent = message;
+                }
+            } else {
+                dom.globalError.classList.add('hidden');
+                dom.globalError.classList.remove('flex');
+                dom.globalErrorMessage.textContent = '';
+            }
+        }
+
+        function updateSubmitButton() {
+            const isDisabled = state.isSubmitting || state.isLocked;
+            dom.submitBtn.disabled = isDisabled;
+
+            if (state.isSubmitting) {
+                dom.submitBtn.innerHTML = `
+                    <div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin ml-2"></div>
+                    جاري التحقق...
+                `;
+                dom.submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                dom.submitBtn.classList.remove('hover:bg-blue-700', 'transform', 'hover:scale-[1.01]');
+            } else if (state.isLocked) {
+                dom.submitBtn.innerHTML = `
+                    الحساب مقفل (<span id="lock-timer">60</span> ثانية)
+                `;
+                dom.submitBtn.classList.add('opacity-50', 'cursor-not-allowed', 'bg-gray-500');
+                dom.submitBtn.classList.remove('hover:bg-blue-700', 'transform', 'hover:scale-[1.01]', 'bg-blue-600');
+            } else {
+                dom.submitBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 ml-2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+                    تسجيل الدخول
+                `;
+                dom.submitBtn.classList.remove('opacity-50', 'cursor-not-allowed', 'bg-gray-500');
+                dom.submitBtn.classList.add('hover:bg-blue-700', 'transform', 'hover:scale-[1.01]', 'bg-blue-600');
+            }
+        }
+        
+        // --- Security & Lock Logic ---
+
+        function lockAccount() {
+            state.isLocked = true;
+            state.lockStartTime = Date.now();
+            state.failedAttempts = 0; // Reset attempts after locking
+            dom.lockMessage.classList.remove('hidden');
+            dom.lockMessage.classList.add('flex');
+            updateSubmitButton();
+        }
+
+        function checkLockStatus() {
+            if (state.isLocked) {
+                const elapsedTime = Date.now() - state.lockStartTime;
+                const remainingTime = Math.max(0, LOCK_DURATION_MS - elapsedTime);
+                const remainingSeconds = Math.ceil(remainingTime / 1000);
+
+                const timerElement = document.getElementById('lock-timer');
+                if (timerElement) {
+                    timerElement.textContent = remainingSeconds;
+                }
+
+                if (remainingTime <= 0) {
+                    state.isLocked = false;
+                    dom.lockMessage.classList.add('hidden');
+                    dom.lockMessage.classList.remove('flex');
+                    updateSubmitButton();
+                }
+            }
+        }
+
+        // --- Core Validation Functions ---
+
+        function validateEmailFormat(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function validateForm() {
+            let isValid = true;
+            const newErrors = {};
+
+            // Clear previous inline errors
+            ['email', 'password'].forEach(key => toggleError(key, ''));
+            state.errors = {};
+
+            // Email Validation
+            if (!state.formData.email.trim()) {
+                newErrors.email = 'Err_4: البريد الإلكتروني مطلوب';
+            } else if (!validateEmailFormat(state.formData.email)) {
+                newErrors.email = 'Err_1: البريد الإلكتروني غير صحيح';
+            }
+
+            // Password Validation
+            if (!state.formData.password.trim()) {
+                newErrors.password = 'Err_4: كلمة المرور مطلوبة';
+            }
+            
+            // Apply new errors
+            state.errors = newErrors;
+            Object.keys(newErrors).forEach(key => toggleError(key, newErrors[key]));
+
+            return Object.keys(newErrors).length === 0;
+        }
+
+        // --- Event Handlers (Global Scope) ---
+
+        window.togglePasswordVisibility = function() {
+            const type = dom.passwordInput.type === 'password' ? 'text' : 'password';
+            dom.passwordInput.type = type;
+            const icon = document.getElementById('toggle-password-icon');
+            
+            // Toggle Eye/EyeOff icons based on visibility state
+            if (type === 'text') {
+                // EyeOff (Hide) icon: Password is now visible
+                icon.innerHTML = `<path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/>`;
+            } else {
+                // Eye (Show) icon: Password is now hidden
+                icon.innerHTML = `<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>`;
+            }
+        }
+
+        window.handleChange = function(e) {
+            const { name, value } = e.target;
+            state.formData[name] = value;
+            
+            // Clear single error field when user types
+            if (state.errors[name]) {
+                toggleError(name, '');
+                delete state.errors[name];
+            }
+            setGlobalError(''); // Clear global error on input change
+        }
+
+        window.handleSubmit = async function(e) {
+            e.preventDefault();
+            setGlobalError('');
+
+            if (state.isLocked) {
+                setGlobalError('Err_01: الحساب مقفل مؤقتاً.', 'err_01');
+                return;
+            }
+
+            if (!validateForm()) {
+                return;
+            }
+
+            state.isSubmitting = true;
+            updateSubmitButton();
+
+            // --- MOCK API CALL SIMULATION ---
+            await new Promise(resolve => setTimeout(resolve, 1500)); 
+
+            try {
+                // Mock logic: Correct credentials are 'student@edu.com' and '123456'
+                const correctEmail = 'student@edu.com';
+                const correctPassword = '123456';
+                
+                let mockResponse = {};
+
+                if (state.formData.email === correctEmail && state.formData.password === correctPassword) {
+                    // Successful Login
+                    mockResponse = { ok: true, status: 'success' };
+                } else if (state.formData.email === 'review@edu.com') {
+                    // Account Under Review
+                    mockResponse = { ok: false, errorCode: 'err_02' };
+                } else if (state.formData.email === 'rejected@edu.com') {
+                    // Account Rejected
+                    mockResponse = { ok: false, errorCode: 'err_03' };
+                } else {
+                    // Incorrect Credentials
+                    mockResponse = { ok: false, errorCode: 'err_01' };
+                }
+
+                if (mockResponse.ok) {
+                    // Success! Reset attempts and show success view
+                    state.failedAttempts = 0;
+                    showSuccessView();
+                } else {
+                    // Handle failure states
+                    if (mockResponse.errorCode === 'err_01') {
+                        state.failedAttempts += 1;
+                        if (state.failedAttempts >= 3) {
+                            lockAccount();
+                        }
+                        const attemptsLeft = 3 - state.failedAttempts;
+                        let message = `بيانات الاعتماد غير صحيحة. يرجى المحاولة مرة أخرى. (محاولات متبقية: ${attemptsLeft})`;
+                        if (attemptsLeft <= 0) {
+                             message = `بيانات الاعتماد غير صحيحة. تم إيقاف الحساب مؤقتاً.`;
+                        } else if (state.failedAttempts === 1) {
+                            message = 'err_01: كلمة المرور أو البريد الإلكتروني غير صحيح. يرجى التأكد من البيانات.';
+                        } else if (state.failedAttempts === 2) {
+                            message = 'err_01: كلمة المرور أو البريد الإلكتروني غير صحيح. لديك محاولة أخيرة قبل قفل الحساب.';
+                        }
+                        setGlobalError(message, 'err_01');
+                    } else if (mockResponse.errorCode === 'err_02') {
+                        setGlobalError('حالة الحساب: قيد المراجعة. لا يمكن تسجيل الدخول حالياً.', 'err_02');
+                    } else if (mockResponse.errorCode === 'err_03') {
+                        setGlobalError('حالة الحساب: تم الرفض. يرجى مراجعة البريد الإلكتروني للحصول على التفاصيل.', 'err_03');
+                    }
+                }
+            } catch (error) {
+                setGlobalError('خطأ في الاتصال بالخادم.');
+            } finally {
+                state.isSubmitting = false;
+                updateSubmitButton();
+            }
+        }
+        
+        // --- View Switching ---
+
+        function showSuccessView() {
+            dom.loginContainer.classList.add('hidden');
+            dom.successView.classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>
