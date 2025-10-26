@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختيار الدورات التعليمية</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-icon {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        h1 {
+            color: #2d3748;
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #718096;
+            font-size: 15px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: #f7fafc;
+            padding: 12px 20px;
+            border-radius: 12px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .user-details h3 {
+            color: #2d3748;
+            font-size: 16px;
+            margin-bottom: 3px;
+        }
+
+        .user-details p {
+            color: #718096;
+            font-size: 13px;
+        }
+
+        .search-filter-section {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 300px;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 12px 24px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .filter-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+        }
+
+        .stats-bar {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #718096;
+            font-size: 13px;
+        }
+
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .course-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .course-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .course-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            position: relative;
+        }
+
+        .course-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .badge-free {
+            background: #48bb78;
+        }
+
+        .badge-paid {
+            background: #ed8936;
+        }
+
+        .wishlist-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .wishlist-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .wishlist-btn.active {
+            color: #e53e3e;
+        }
+
+        .course-content {
+            padding: 25px;
+        }
+
+        .course-title {
+            font-size: 20px;
+            color: #2d3748;
+            margin-bottom: 12px;
+            font-weight: bold;
+            line-height: 1.4;
+        }
+
+        .course-description {
+            color: #718096;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .course-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #f6ad55;
+            font-weight: 600;
+        }
+
+        .course-students {
+            color: #718096;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .course-price {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .course-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #2d3748;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-share {
+            width: 45px;
+            padding: 12px;
+            background: #e2e8f0;
+            color: #2d3748;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 35px;
+            border-radius: 20px;
+            max-width: 900px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 25px;
+        }
+
+        .modal-title {
+            font-size: 26px;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .close-btn {
+            background: #e2e8f0;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.3s;
+        }
+
+        .close-btn:hover {
+            background: #cbd5e0;
+            transform: rotate(90deg);
+        }
+
+        .course-details {
+            margin-bottom: 25px;
+        }
+
+        .detail-section {
+            margin-bottom: 20px;
+        }
+
+        .detail-section h3 {
+            color: #2d3748;
+            font-size: 18px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-section p {
+            color: #718096;
+            line-height: 1.8;
+        }
+
+        .progress-section {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .reviews-section {
+            margin-top: 25px;
+        }
+
+        .review-card {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .reviewer-name {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .review-rating {
+            color: #f6ad55;
+        }
+
+        .review-text {
+            color: #718096;
+            line-height: 1.6;
+        }
+
+        .review-form {
+            background: #f7fafc;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .rating-input {
+            display: flex;
+            gap: 10px;
+            font-size: 30px;
+        }
+
+        .rating-input span {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .rating-input span:hover,
+        .rating-input span.active {
+            color: #f6ad55;
+            transform: scale(1.2);
+        }
+
+        .quiz-section {
+            background: #f7fafc;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .quiz-question {
+            margin-bottom: 20px;
+        }
+
+        .quiz-question h4 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .quiz-option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quiz-option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .quiz-option.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #e6f0ff 0%, #f0e6ff 100%);
+        }
+
+        .quiz-option.correct {
+            border-color: #48bb78;
+            background: #c6f6d5;
+        }
+
+        .quiz-option.incorrect {
+            border-color: #f56565;
+            background: #fed7d7;
+        }
+
+        .quiz-result {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .quiz-score {
+            font-size: 48px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert.success {
+            background: #c6f6d5;
+            color: #22543d;
+            border-right: 4px solid #48bb78;
+        }
+
+        .alert.error {
+            background: #fed7d7;
+            color: #742a2a;
+            border-right: 4px solid #f56565;
+        }
+
+        .alert.info {
+            background: #bee3f8;
+            color: #2c5282;
+            border-right: 4px solid #4299e1;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #718096;
+        }
+
+        .empty-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .courses-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .search-filter-section {
+                flex-direction: column;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <div class="header-title">
+                    <div class="header-icon">🎓</div>
+                    <div>
+                        <h1>اختيار الدورات التعليمية</h1>
+                        <p class="subtitle">استكشف مهارات جديدة وطور قدراتك مع دوراتنا المتنوعة</p>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar">أح</div>
+                    <div class="user-details">
+                        <h3>أحمد محمد</h3>
+                        <p>طالب نشط</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="search-filter-section">
+                <input type="text" id="searchBox" class="search-box" placeholder="🔍 ابحث عن دورة...">
+                <div class="filter-buttons">
+                    <button class="filter-btn active" onclick="filterCourses('all')">الكل</button>
+                    <button class="filter-btn" onclick="filterCourses('free')">مجانية</button>
+                    <button class="filter-btn" onclick="filterCourses('paid')">مدفوعة</button>
+                    <button class="filter-btn" onclick="filterCourses('enrolled')">المسجلة</button>
+                    <button class="filter-btn" onclick="filterCourses('wishlist')">المفضلة</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalCourses">12</div>
+                    <div class="stat-label">إجمالي الدورات</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="enrolledCourses">3</div>
+                    <div class="stat-label">الدورات المسجلة</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="completedCourses">1</div>
+                    <div class="stat-label">الدورات المكتملة</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="wishlistCount">5</div>
+                    <div class="stat-label">قائمة الرغبات</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="alertContainer"></div>
+        <div id="coursesContainer" class="courses-grid"></div>
+
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <div class="empty-icon">📚</div>
+            <h3>لا توجد دورات</h3>
+            <p>لم يتم العثور على دورات تطابق البحث</p>
+        </div>
+    </div>
+
+    <div id="courseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h2 class="modal-title" id="modalCourseTitle"></h2>
+                    <p class="subtitle" id="modalCourseBadge"></p>
+                </div>
+                <button class="close-btn" onclick="closeCourseModal()">×</button>
+            </div>
+
+            <div class="course-details">
+                <div class="detail-section">
+                    <h3>📋 الوصف</h3>
+                    <p id="modalCourseDescription"></p>
+                </div>
+
+                <div class="detail-section">
+                    <h3>📚 المحتوى</h3>
+                    <p id="modalCourseContent"></p>
+                </div>
+
+                <div id="progressSection" class="progress-section" style="display: none;">
+                    <div class="progress-label">
+                        <span>نسبة الإنجاز</span>
+                        <span id="progressPercentage">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div id="quizSection" class="quiz-section" style="display: none;">
+                    <h3 style="margin-bottom: 20px;">📝 اختبار الدورة</h3>
+                    <div id="quizQuestions"></div>
+                    <div id="quizResult" class="quiz-result" style="display: none;"></div>
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button id="submitQuizBtn" class="btn btn-primary" onclick="submitQuiz()">إرسال الإجابات</button>
+                        <button id="retakeQuizBtn" class="btn btn-secondary" onclick="retakeQuiz()" style="display: none;">إعادة المحاولة</button>
+                    </div>
+                </div>
+
+                <div class="reviews-section">
+                    <h3 style="margin-bottom: 15px;">⭐ التقييمات</h3>
+                    <div id="reviewsList"></div>
+
+                    <div class="review-form">
+                        <h4 style="margin-bottom: 15px; color: #2d3748;">أضف تقييمك</h4>
+                        <div class="form-group">
+                            <label>التقييم</label>
+                            <div class="rating-input" id="ratingInput">
+                                <span onclick="setRating(1)">☆</span>
+                                <span onclick="setRating(2)">☆</span>
+                                <span onclick="setRating(3)">☆</span>
+                                <span onclick="setRating(4)">☆</span>
+                                <span onclick="setRating(5)">☆</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>التعليق</label>
+                            <textarea id="reviewText" placeholder="اكتب تقييمك هنا..."></textarea>
+                        </div>
+                        <button class="btn btn-primary" onclick="submitReview()">نشر التقييم</button>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 25px;">
+                <button id="enrollBtn" class="btn btn-primary" onclick="enrollCourse()"></button>
+                <button class="btn btn-share" onclick="shareCourse()">🔗</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let courses = [
+            {
+                id: 1,
+                title: "تطوير الويب الحديث",
+                description: "تعلم HTML, CSS, JavaScript وبناء تطبيقات ويب تفاعلية",
+                content: "يشمل المحتوى: أساسيات HTML5، تصميم متجاوب مع CSS3، برمجة JavaScript، إطار عمل React، التعامل مع APIs، نشر التطبيقات",
+                type: "paid",
+                price: 299,
+                rating: 4.8,
+                students: 1250,
+                icon: "💻",
+                enrolled: false,
+                progress: 0,
+                reviews: [
+                    { name: "سارة أحمد", rating: 5, text: "دورة ممتازة! تعلمت الكثير" },
+                    { name: "محمد علي", rating: 4, text: "محتوى جيد ومفيد" }
+                ]
+            },
+            {
+                id: 2,
+                title: "تصميم واجهات المستخدم",
+                description: "احترف تصميم واجهات جذابة وسهلة الاستخدام",
+                content: "يشمل المحتوى: مبادئ التصميم، نظرية الألوان، Typography، أدوات Figma و Adobe XD، تصميم responsive، User Experience",
+                type: "free",
+                price: 0,
+                rating: 4.6,
+                students: 2100,
+                icon: "🎨",
+                enrolled: true,
+                progress: 65,
+                reviews: [
+                    { name: "فاطمة محمود", rating: 5, text: "دورة رائعة للمبتدئين" }
+                ]
+            },
+            {
+                id: 3,
+                title: "البرمجة بلغة Python",
+                description: "من الصفر إلى الاحتراف في Python",
+                content: "يشمل المحتوى: أساسيات البرمجة، هياكل البيانات، OOP، التعامل مع الملفات، المكتبات الشهيرة، مشاريع عملية",
+                type: "paid",
+                price: 399,
+                rating: 4.9,
+                students: 3500,
+                icon: "🐍",
+                enrolled: false,
+                progress: 0,
+                reviews: []
+            },
+            {
+                id: 7,
+                title: "تطوير تطبيقات الموبايل",
+                description: "بناء تطبيقات iOS و Android",
+                content: "يشمل المحتوى: React Native، Flutter، تصميم واجهات الموبايل، APIs، نشر التطبيقات، تحسين الأداء",
+                type: "paid",
+                price: 449,
+                rating: 4.8,
+                students: 920,
+                icon: "📱",
+                enrolled: true,
+                progress: 100,
+                reviews: []
+            },
+            {
+                id: 8,
+                title: "أمن المعلومات",
+                description: "حماية الأنظمة والبيانات من الهجمات",
+                content: "يشمل المحتوى: أساسيات الأمن السيبراني، التشفير، اختبار الاختراق، الشبكات الآمنة، أفضل الممارسات",
+                type: "free",
+                price: 0,
+                rating: 4.6,
+                students: 1100,
+                icon: "🔒",
+                enrolled: false,
+                progress: 0,
+                reviews: []
+            },
+            {
+                id: 9,
+                title: "تحليل البيانات",
+                description: "استخراج رؤى قيمة من البيانات",
+                content: "يشمل المحتوى: Excel المتقدم، SQL، Python للتحليل، Tableau، Power BI، إحصاء تطبيقي، مشاريع عملية",
+                type: "paid",
+                price: 379,
+                rating: 4.7,
+                students: 1450,
+                icon: "📈",
+                enrolled: false,
+                progress: 0,
+                reviews: []
+            },
+            {
+                id: 10,
+                title: "التصوير الفوتوغرافي",
+                description: "احترف فن التصوير الفوتوغرافي",
+                content: "يشمل المحتوى: أساسيات الكاميرا، التكوين والإضاءة، تحرير الصور، Adobe Lightroom، تصوير البورتريه والمناظر",
+                type: "free",
+                price: 0,
+                rating: 4.5,
+                students: 780,
+                icon: "📷",
+                enrolled: false,
+                progress: 0,
+                reviews: []
+            },
+            {
+                id: 11,
+                title: "ريادة الأعمال",
+                description: "ابدأ مشروعك الخاص بثقة",
+                content: "يشمل المحتوى: دراسة الجدوى، نموذج العمل، التمويل، التسويق، إدارة الفريق، قصص نجاح ملهمة",
+                type: "paid",
+                price: 299,
+                rating: 4.6,
+                students: 1340,
+                icon: "💼",
+                enrolled: false,
+                progress: 0,
+                reviews: []
+            },
+            {
+                id: 12,
+                title: "اللغة الإنجليزية للأعمال",
+                description: "تحدث الإنجليزية بطلاقة في بيئة العمل",
+                content: "يشمل المحتوى: المصطلحات التجارية، كتابة الإيميلات، العروض التقديمية، المحادثات الهاتفية، الاجتماعات",
+                type: "paid",
+                price: 199,
+                rating: 4.4,
+                students: 2200,
+                icon: "🗣️",
+                enrolled: false,
+                progress: 0,
+                reviews: []
+            }
+        ];
+
+        let wishlist = [];
+        let currentCourse = null;
+        let currentFilter = 'all';
+        let selectedRating = 0;
+
+        const quizData = {
+            1: [
+                {
+                    question: "ما هو HTML؟",
+                    options: ["لغة برمجة", "لغة ترميز", "قاعدة بيانات", "نظام تشغيل"],
+                    correct: 1
+                },
+                {
+                    question: "ما هو CSS؟",
+                    options: ["لغة تنسيق", "لغة برمجة", "إطار عمل", "مكتبة"],
+                    correct: 0
+                }
+            ],
+            2: [
+                {
+                    question: "ما هو أهم مبدأ في تصميم واجهات المستخدم؟",
+                    options: ["الجمال", "البساطة وسهولة الاستخدام", "الألوان الكثيرة", "التعقيد"],
+                    correct: 1
+                }
+            ]
+        };
+
+        let userAnswers = {};
+        let quizAttempts = {};
+
+        document.addEventListener('DOMContentLoaded', function() {
+            renderCourses();
+            setupSearchListener();
+            updateStats();
+        });
+
+        function setupSearchListener() {
+            const searchBox = document.getElementById('searchBox');
+            searchBox.addEventListener('input', function() {
+                renderCourses();
+            });
+        }
+
+        function renderCourses() {
+            const container = document.getElementById('coursesContainer');
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            const emptyState = document.getElementById('emptyState');
+            
+            let filteredCourses = courses.filter(course => {
+                const matchesSearch = course.title.toLowerCase().includes(searchTerm) || 
+                                     course.description.toLowerCase().includes(searchTerm);
+                
+                if (currentFilter === 'all') return matchesSearch;
+                if (currentFilter === 'free') return matchesSearch && course.type === 'free';
+                if (currentFilter === 'paid') return matchesSearch && course.type === 'paid';
+                if (currentFilter === 'enrolled') return matchesSearch && course.enrolled;
+                if (currentFilter === 'wishlist') return matchesSearch && wishlist.includes(course.id);
+                
+                return matchesSearch;
+            });
+
+            if (filteredCourses.length === 0) {
+                container.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            container.style.display = 'grid';
+            emptyState.style.display = 'none';
+            container.innerHTML = '';
+
+            filteredCourses.forEach(course => {
+                const card = createCourseCard(course);
+                container.appendChild(card);
+            });
+        }
+
+        function createCourseCard(course) {
+            const card = document.createElement('div');
+            card.className = 'course-card';
+            card.setAttribute('data-id', course.id);
+
+            const isInWishlist = wishlist.includes(course.id);
+
+            card.innerHTML = `
+                <div class="course-image">
+                    <span style="font-size: 80px;">${course.icon}</span>
+                    <span class="course-badge ${course.type === 'free' ? 'badge-free' : 'badge-paid'}">
+                        ${course.type === 'free' ? 'مجاني' : 'مدفوع'}
+                    </span>
+                    <button class="wishlist-btn ${isInWishlist ? 'active' : ''}" 
+                            onclick="toggleWishlist(event, ${course.id})">
+                        ${isInWishlist ? '❤️' : '🤍'}
+                    </button>
+                </div>
+                <div class="course-content">
+                    <h3 class="course-title">${course.title}</h3>
+                    <p class="course-description">${course.description}</p>
+                    <div class="course-meta">
+                        <div class="course-rating">
+                            <span>⭐</span>
+                            <span>${course.rating}</span>
+                            <span style="color: #718096;">(${course.reviews.length})</span>
+                        </div>
+                        <div class="course-students">
+                            <span>👥</span>
+                            <span>${course.students} طالب</span>
+                        </div>
+                    </div>
+                    ${course.enrolled ? 
+                        `<div style="margin-bottom: 15px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 13px; color: #718096;">
+                                <span>التقدم</span>
+                                <span>${course.progress}%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${course.progress}%"></div>
+                            </div>
+                        </div>` : 
+                        `<div class="course-price">${course.type === 'free' ? 'مجاني' : course.price + ' ريال'}</div>`
+                    }
+                    <div class="course-actions">
+                        ${course.enrolled ? 
+                            `<button class="btn btn-success" onclick="openCourseModal(${course.id})">
+                                ${course.progress === 100 ? '✓ مكتمل' : '▶️ متابعة التعلم'}
+                            </button>` :
+                            `<button class="btn btn-primary" onclick="openCourseModal(${course.id})">
+                                ${course.type === 'free' ? '🚀 ابدأ الآن' : '💳 اشترك الآن'}
+                            </button>`
+                        }
+                        <button class="btn btn-share" onclick="shareCourse(event, ${course.id})" title="مشاركة">
+                            🔗
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        function toggleWishlist(event, courseId) {
+            event.stopPropagation();
+            
+            const index = wishlist.indexOf(courseId);
+            if (index > -1) {
+                wishlist.splice(index, 1);
+                showAlert('info', 'تم إزالة الدورة من المفضلة');
+            } else {
+                wishlist.push(courseId);
+                showAlert('success', 'تم إضافة الدورة إلى المفضلة ❤️');
+            }
+            
+            renderCourses();
+            updateStats();
+        }
+
+        function filterCourses(filter) {
+            currentFilter = filter;
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            renderCourses();
+        }
+
+        function openCourseModal(courseId) {
+            currentCourse = courses.find(c => c.id === courseId);
+            if (!currentCourse) return;
+
+            document.getElementById('modalCourseTitle').textContent = currentCourse.title;
+            document.getElementById('modalCourseBadge').textContent = currentCourse.type === 'free' ? '🎁 دورة مجانية' : `💰 ${currentCourse.price} ريال`;
+            document.getElementById('modalCourseDescription').textContent = currentCourse.description;
+            document.getElementById('modalCourseContent').textContent = currentCourse.content;
+
+            const enrollBtn = document.getElementById('enrollBtn');
+            if (currentCourse.enrolled) {
+                enrollBtn.textContent = currentCourse.progress === 100 ? '✓ دورة مكتملة' : '▶️ متابعة التعلم';
+                enrollBtn.onclick = () => continueLearning();
+                
+                document.getElementById('progressSection').style.display = 'block';
+                document.getElementById('progressPercentage').textContent = currentCourse.progress + '%';
+                document.getElementById('progressFill').style.width = currentCourse.progress + '%';
+
+                if (quizData[courseId]) {
+                    document.getElementById('quizSection').style.display = 'block';
+                    loadQuiz(courseId);
+                }
+            } else {
+                enrollBtn.textContent = currentCourse.type === 'free' ? '🚀 ابدأ التعلم مجاناً' : `💳 اشترك بـ ${currentCourse.price} ريال`;
+                enrollBtn.onclick = () => enrollCourse();
+                document.getElementById('progressSection').style.display = 'none';
+                document.getElementById('quizSection').style.display = 'none';
+            }
+
+            loadReviews();
+            document.getElementById('courseModal').classList.add('active');
+        }
+
+        function closeCourseModal() {
+            document.getElementById('courseModal').classList.remove('active');
+            currentCourse = null;
+            selectedRating = 0;
+            resetRatingStars();
+        }
+
+        function enrollCourse() {
+            if (!currentCourse) return;
+
+            if (currentCourse.type === 'paid') {
+                const hasPaymentMethod = confirm('هل لديك وسيلة دفع صالحة للاشتراك في هذه الدورة؟');
+                
+                if (!hasPaymentMethod) {
+                    showAlert('error', '⚠️ فشل التسجيل: يجب إضافة وسيلة دفع صالحة للاشتراك في الدورات المدفوعة');
+                    return;
+                }
+
+                showAlert('success', '✓ تم الدفع بنجاح! مرحباً بك في الدورة');
+            } else {
+                showAlert('success', '✓ تم التسجيل بنجاح! يمكنك البدء في التعلم الآن');
+            }
+
+            currentCourse.enrolled = true;
+            currentCourse.progress = 0;
+
+            renderCourses();
+            updateStats();
+            closeCourseModal();
+            
+            setTimeout(() => openCourseModal(currentCourse.id), 300);
+        }
+
+        function continueLearning() {
+            if (!currentCourse) return;
+
+            if (currentCourse.progress < 100) {
+                currentCourse.progress = Math.min(currentCourse.progress + 15, 100);
+                
+                document.getElementById('progressPercentage').textContent = currentCourse.progress + '%';
+                document.getElementById('progressFill').style.width = currentCourse.progress + '%';
+
+                showAlert('success', `رائع! تقدمت ${15}% في الدورة 🎉`);
+                
+                renderCourses();
+                updateStats();
+
+                if (currentCourse.progress === 100) {
+                    setTimeout(() => {
+                        showAlert('success', '🎊 تهانينا! لقد أكملت الدورة بنجاح');
+                    }, 500);
+                }
+            }
+        }
+
+        function loadQuiz(courseId) {
+            const questions = quizData[courseId];
+            if (!questions) return;
+
+            const container = document.getElementById('quizQuestions');
+            container.innerHTML = '';
+            userAnswers = {};
+
+            if (!quizAttempts[courseId]) {
+                quizAttempts[courseId] = 0;
+            }
+
+            questions.forEach((q, qIndex) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'quiz-question';
+                questionDiv.innerHTML = `
+                    <h4>${qIndex + 1}. ${q.question}</h4>
+                    <div class="quiz-options">
+                        ${q.options.map((option, oIndex) => `
+                            <div class="quiz-option" onclick="selectOption(${qIndex}, ${oIndex})">
+                                ${option}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+
+            document.getElementById('quizResult').style.display = 'none';
+            document.getElementById('submitQuizBtn').style.display = 'block';
+            document.getElementById('retakeQuizBtn').style.display = 'none';
+        }
+
+        function selectOption(questionIndex, optionIndex) {
+            userAnswers[questionIndex] = optionIndex;
+
+            const questionDiv = document.querySelectorAll('.quiz-question')[questionIndex];
+            questionDiv.querySelectorAll('.quiz-option').forEach((opt, idx) => {
+                opt.classList.remove('selected');
+                if (idx === optionIndex) {
+                    opt.classList.add('selected');
+                }
+            });
+        }
+
+        function submitQuiz() {
+            if (!currentCourse || !quizData[currentCourse.id]) return;
+
+            const questions = quizData[currentCourse.id];
+            let correctCount = 0;
+
+            questions.forEach((q, qIndex) => {
+                const questionDiv = document.querySelectorAll('.quiz-question')[qIndex];
+                const options = questionDiv.querySelectorAll('.quiz-option');
+
+                options.forEach((opt, oIndex) => {
+                    opt.classList.remove('selected', 'correct', 'incorrect');
+                    
+                    if (oIndex === q.correct) {
+                        opt.classList.add('correct');
+                    }
+                    
+                    if (userAnswers[qIndex] === oIndex) {
+                        if (oIndex === q.correct) {
+                            correctCount++;
+                        } else {
+                            opt.classList.add('incorrect');
+                        }
+                    }
+                });
+            });
+
+            const score = Math.round((correctCount / questions.length) * 100);
+            quizAttempts[currentCourse.id]++;
+
+            const resultDiv = document.getElementById('quizResult');
+            resultDiv.innerHTML = `
+                <div class="quiz-score">${score}%</div>
+                <p style="color: #718096; margin-bottom: 10px;">
+                    ${correctCount} من ${questions.length} إجابات صحيحة
+                </p>
+                <p style="color: #718096; font-size: 14px;">
+                    عدد المحاولات: ${quizAttempts[currentCourse.id]}
+                </p>
+            `;
+            resultDiv.style.display = 'block';
+
+            document.getElementById('submitQuizBtn').style.display = 'none';
+            document.getElementById('retakeQuizBtn').style.display = 'block';
+
+            showAlert(score >= 70 ? 'success' : 'info', 
+                     score >= 70 ? '🎉 ممتاز! لقد نجحت في الاختبار' : '💪 حاول مرة أخرى لتحسين نتيجتك');
+        }
+
+        function retakeQuiz() {
+            loadQuiz(currentCourse.id);
+            showAlert('info', 'يمكنك إعادة المحاولة الآن');
+        }
+
+        function loadReviews() {
+            if (!currentCourse) return;
+
+            const container = document.getElementById('reviewsList');
+            container.innerHTML = '';
+
+            if (currentCourse.reviews.length === 0) {
+                container.innerHTML = '<p style="color: #718096; text-align: center; padding: 20px;">لا توجد تقييمات بعد. كن أول من يقيّم هذه الدورة!</p>';
+                return;
+            }
+
+            currentCourse.reviews.forEach(review => {
+                const reviewCard = document.createElement('div');
+                reviewCard.className = 'review-card';
+                reviewCard.innerHTML = `
+                    <div class="review-header">
+                        <span class="reviewer-name">${review.name}</span>
+                        <span class="review-rating">${'⭐'.repeat(review.rating)}</span>
+                    </div>
+                    <p class="review-text">${review.text}</p>
+                `;
+                container.appendChild(reviewCard);
+            });
+        }
+
+        function setRating(rating) {
+            selectedRating = rating;
+            const stars = document.querySelectorAll('#ratingInput span');
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.textContent = '★';
+                    star.classList.add('active');
+                } else {
+                    star.textContent = '☆';
+                    star.classList.remove('active');
+                }
+            });
+        }
+
+        function resetRatingStars() {
+            const stars = document.querySelectorAll('#ratingInput span');
+            stars.forEach(star => {
+                star.textContent = '☆';
+                star.classList.remove('active');
+            });
+        }
+
+        function submitReview() {
+            if (!currentCourse) return;
+
+            if (selectedRating === 0) {
+                showAlert('error', 'الرجاء تحديد التقييم');
+                return;
+            }
+
+            const reviewText = document.getElementById('reviewText').value.trim();
+            if (!reviewText) {
+                showAlert('error', 'الرجاء كتابة تعليق');
+                return;
+            }
+
+            const newReview = {
+                name: 'أحمد محمد',
+                rating: selectedRating,
+                text: reviewText
+            };
+
+            currentCourse.reviews.push(newReview);
+            
+            const totalRating = currentCourse.reviews.reduce((sum, r) => sum + r.rating, 0);
+            currentCourse.rating = (totalRating / currentCourse.reviews.length).toFixed(1);
+
+            showAlert('success', '✓ تم نشر تقييمك بنجاح!');
+            
+            document.getElementById('reviewText').value = '';
+            selectedRating = 0;
+            resetRatingStars();
+
+            loadReviews();
+            renderCourses();
+        }
+
+        function shareCourse(event, courseId) {
+            if (event) event.stopPropagation();
+            
+            const course = courseId ? courses.find(c => c.id === courseId) : currentCourse;
+            if (!course) return;
+
+            const shareText = `تحقق من هذه الدورة الرائعة: ${course.title}\n${course.description}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: course.title,
+                    text: shareText,
+                    url: window.location.href
+                }).then(() => {
+                    showAlert('success', '✓ تم مشاركة الدورة بنجاح');
+                }).catch(() => {
+                    copyToClipboard(shareText);
+                });
+            } else {
+                copyToClipboard(shareText);
+            }
+        }
+
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            showAlert('success', '✓ تم نسخ رابط الدورة');
+        }
+
+        function updateStats() {
+            document.getElementById('totalCourses').textContent = courses.length;
+            document.getElementById('enrolledCourses').textContent = courses.filter(c => c.enrolled).length;
+            document.getElementById('completedCourses').textContent = courses.filter(c => c.progress === 100).length;
+            document.getElementById('wishlistCount').textContent = wishlist.length;
+        }
+
+        function showAlert(type, message) {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert ${type}`;
+            
+            const icons = {
+                success: '✓',
+                error: '✗',
+                info: 'ℹ'
+            };
+            
+            alert.innerHTML = `
+                <span style="font-size: 20px;">${icons[type]}</span>
+                <span>${message}</span>
+            `;
+            
+            container.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.style.animation = 'slideIn 0.3s ease-out reverse';
+                setTimeout(() => alert.remove(), 300);
+            }, 5000);
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('courseModal');
+            if (event.target === modal) {
+                closeCourseModal();
+            }
+        }
+    </script>
+</body>
+</html>
