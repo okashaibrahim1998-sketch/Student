@@ -525,6 +525,11 @@
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
         }
 
         .alert.success {
@@ -564,6 +569,9 @@
 </head>
 <body>
     <div class="container">
+        <!-- Alert Messages -->
+        <div id="alertBox" class="alert"></div>
+
         <!-- Header -->
         <div class="header">
             <div class="header-top">
@@ -580,19 +588,19 @@
             <div class="stats-grid">
                 <div class="stat-card total">
                     <div class="stat-label">إجمالي الدورات</div>
-                    <div class="stat-value">25</div>
+                    <div class="stat-value" id="totalCourses">0</div>
                 </div>
                 <div class="stat-card active">
                     <div class="stat-label">الدورات النشطة</div>
-                    <div class="stat-value">18</div>
+                    <div class="stat-value" id="activeCourses">0</div>
                 </div>
                 <div class="stat-card published">
                     <div class="stat-label">المنشورة</div>
-                    <div class="stat-value">15</div>
+                    <div class="stat-value" id="publishedCourses">0</div>
                 </div>
                 <div class="stat-card draft">
                     <div class="stat-label">المسودات</div>
-                    <div class="stat-value">10</div>
+                    <div class="stat-value" id="draftCourses">0</div>
                 </div>
             </div>
         </div>
@@ -607,15 +615,15 @@
                     <div class="filter-title">الحالة</div>
                     <div class="filter-options">
                         <label class="filter-option">
-                            <input type="checkbox" name="status" value="active">
+                            <input type="checkbox" name="status" value="active" onchange="applyFilters()">
                             <span>نشط</span>
                         </label>
                         <label class="filter-option">
-                            <input type="checkbox" name="status" value="draft">
+                            <input type="checkbox" name="status" value="draft" onchange="applyFilters()">
                             <span>مسودة</span>
                         </label>
                         <label class="filter-option">
-                            <input type="checkbox" name="status" value="archived">
+                            <input type="checkbox" name="status" value="archived" onchange="applyFilters()">
                             <span>مؤرشف</span>
                         </label>
                     </div>
@@ -625,15 +633,15 @@
                     <div class="filter-title">نوع السعر</div>
                     <div class="filter-options">
                         <label class="filter-option">
-                            <input type="radio" name="pricing" value="all" checked>
+                            <input type="radio" name="pricing" value="all" checked onchange="applyFilters()">
                             <span>الكل</span>
                         </label>
                         <label class="filter-option">
-                            <input type="radio" name="pricing" value="free">
+                            <input type="radio" name="pricing" value="free" onchange="applyFilters()">
                             <span>مجاني</span>
                         </label>
                         <label class="filter-option">
-                            <input type="radio" name="pricing" value="paid">
+                            <input type="radio" name="pricing" value="paid" onchange="applyFilters()">
                             <span>مدفوع</span>
                         </label>
                     </div>
@@ -643,15 +651,15 @@
                     <div class="filter-title">الرؤية</div>
                     <div class="filter-options">
                         <label class="filter-option">
-                            <input type="checkbox" name="visibility" value="public">
+                            <input type="checkbox" name="visibility" value="public" onchange="applyFilters()">
                             <span>عام</span>
                         </label>
                         <label class="filter-option">
-                            <input type="checkbox" name="visibility" value="private">
+                            <input type="checkbox" name="visibility" value="private" onchange="applyFilters()">
                             <span>خاص</span>
                         </label>
                         <label class="filter-option">
-                            <input type="checkbox" name="visibility" value="protected">
+                            <input type="checkbox" name="visibility" value="protected" onchange="applyFilters()">
                             <span>محمي بكلمة مرور</span>
                         </label>
                     </div>
@@ -678,49 +686,8 @@
                                 <th>الإجراءات</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>مقدمة في البرمجة</td>
-                                <td><span class="badge free">مجاني</span></td>
-                                <td><span class="badge public">عام</span></td>
-                                <td>نشط</td>
-                                <td>2025-01-15</td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn-icon edit" onclick="editCourse(1)">✏️ تعديل</button>
-                                        <button class="btn-icon hide" onclick="hideCourse(1)">👁️ إخفاء</button>
-                                        <button class="btn-icon delete" onclick="showDeleteModal(1)">🗑️ حذف</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>تطوير تطبيقات الويب</td>
-                                <td><span class="badge paid">مدفوع</span></td>
-                                <td><span class="badge protected">محمي</span></td>
-                                <td>نشط</td>
-                                <td>2025-02-01</td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn-icon edit" onclick="editCourse(2)">✏️ تعديل</button>
-                                        <button class="btn-icon hide" onclick="hideCourse(2)">👁️ إخفاء</button>
-                                        <button class="btn-icon delete" onclick="showDeleteModal(2)">🗑️ حذف</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>تصميم واجهات المستخدم</td>
-                                <td><span class="badge paid">مدفوع</span></td>
-                                <td><span class="badge public">عام</span></td>
-                                <td>مسودة</td>
-                                <td>-</td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn-icon edit" onclick="editCourse(3)">✏️ تعديل</button>
-                                        <button class="btn-icon hide" onclick="hideCourse(3)">👁️ إخفاء</button>
-                                        <button class="btn-icon delete" onclick="showDeleteModal(3)">🗑️ حذف</button>
-                                    </div>
-                                </td>
-                            </tr>
+                        <tbody id="courseTableBody">
+                            <!-- Courses will be loaded here -->
                         </tbody>
                     </table>
                 </div>
@@ -728,11 +695,13 @@
                 <!-- Course Form -->
                 <div id="courseFormView" class="course-form">
                     <div class="content-header">
-                        <h2>إضافة دورة جديدة</h2>
+                        <h2 id="formTitle">إضافة دورة جديدة</h2>
                         <button class="btn btn-secondary" onclick="hideCourseForm()">↩️ العودة للقائمة</button>
                     </div>
 
                     <form id="courseForm">
+                        <input type="hidden" id="courseId">
+                        
                         <!-- Basic Information -->
                         <div class="form-section">
                             <h3 class="section-title">المعلومات الأساسية</h3>
@@ -850,23 +819,7 @@
                             </div>
                         </div>
 
-                        <!-- Media -->
-                        <div class="form-section">
-                            <h3 class="section-title">الوسائط</h3>
-                            <div class="form-grid">
-                                <div class="form-group">
-                                    <label>الصورة المميزة</label>
-                                    <input type="file" id="featuredImage" accept="image/*">
-                                </div>
-
-                                <div class="form-group">
-                                    <label>فيديو تعريفي (رابط)</label>
-                                    <input type="text" id="introVideo" placeholder="https://youtube.com/...">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Instructor & Requirements -->
+                        <!-- Instructor -->
                         <div class="form-section">
                             <h3 class="section-title">المدرب والمتطلبات</h3>
                             <div class="form-grid">
@@ -889,55 +842,6 @@
                                     <label>المتطلبات الأساسية</label>
                                     <textarea id="prerequisites" placeholder="أدخل المتطلبات الأساسية للدورة"></textarea>
                                 </div>
-
-                                <div class="form-group full-width">
-                                    <label>ما سيتعلمه الطلاب</label>
-                                    <textarea id="learningOutcomes" placeholder="أدخل الأهداف التعليمية"></textarea>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Curriculum Management -->
-                        <div class="form-section">
-                            <h3 class="section-title">المنهج الدراسي</h3>
-                            <div class="curriculum-section">
-                                <button type="button" class="btn btn-primary" onclick="addTopic()">➕ إضافة موضوع جديد</button>
-                                
-                                <div id="topicsList" style="margin-top: 20px;">
-                                    <!-- Topics will be added here dynamically -->
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Certificate & Settings -->
-                        <div class="form-section">
-                            <h3 class="section-title">الشهادة والإعدادات</h3>
-                            <div class="form-grid">
-                                <div class="form-group">
-                                    <div class="checkbox-group">
-                                        <input type="checkbox" id="certificateEnabled">
-                                        <label for="certificateEnabled">تفعيل الشهادة</label>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>نسبة النجاح المطلوبة (%)</label>
-                                    <input type="number" id="passingScore" min="0" max="100" value="70">
-                                </div>
-
-                                <div class="form-group">
-                                    <div class="checkbox-group">
-                                        <input type="checkbox" id="enableForum">
-                                        <label for="enableForum">تفعيل المنتدى</label>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <div class="checkbox-group">
-                                        <input type="checkbox" id="enableQA">
-                                        <label for="enableQA">تفعيل الأسئلة والأجوبة</label>
-                                    </div>
-                                </div>
                             </div>
                         </div>
 
@@ -945,7 +849,7 @@
                         <div class="form-actions">
                             <button type="button" class="btn btn-secondary" onclick="hideCourseForm()">إلغاء</button>
                             <button type="button" class="btn btn-secondary" onclick="saveDraft()">حفظ كمسودة</button>
-                            <button type="submit" class="btn btn-primary">نشر الدورة</button>
+                            <button type="submit" class="btn btn-primary">حفظ الدورة</button>
                         </div>
                     </form>
                 </div>
@@ -973,108 +877,137 @@
         </div>
     </div>
 
-    <!-- Add Topic Modal -->
-    <div id="topicModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">إضافة موضوع جديد</h3>
-            </div>
-            
-            <div class="form-group">
-                <label>عنوان الموضوع <span class="required">*</span></label>
-                <input type="text" id="topicTitle" placeholder="أدخل عنوان الموضوع">
-            </div>
-
-            <div class="form-group">
-                <label>الوصف</label>
-                <textarea id="topicDescription" rows="3" placeholder="وصف مختصر للموضوع"></textarea>
-            </div>
-
-            <div class="modal-actions">
-                <button class="btn btn-secondary" onclick="closeTopicModal()">إلغاء</button>
-                <button class="btn btn-primary" onclick="saveTopicModal()">إضافة الموضوع</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Add Lesson Modal -->
-    <div id="lessonModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">إضافة درس جديد</h3>
-            </div>
-            
-            <div class="form-group">
-                <label>عنوان الدرس <span class="required">*</span></label>
-                <input type="text" id="lessonTitle" placeholder="أدخل عنوان الدرس">
-            </div>
-
-            <div class="form-group">
-                <label>نوع الدرس</label>
-                <select id="lessonType">
-                    <option value="video">فيديو</option>
-                    <option value="text">نص</option>
-                    <option value="pdf">PDF</option>
-                    <option value="interactive">تفاعلي</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>المدة (دقائق)</label>
-                <input type="number" id="lessonDuration" min="1" placeholder="30">
-            </div>
-
-            <div class="form-group">
-                <label>المحتوى</label>
-                <textarea id="lessonContent" rows="4" placeholder="رابط الفيديو أو محتوى الدرس"></textarea>
-            </div>
-
-            <div class="modal-actions">
-                <button class="btn btn-secondary" onclick="closeLessonModal()">إلغاء</button>
-                <button class="btn btn-primary" onclick="saveLessonModal()">إضافة الدرس</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Add Quiz Modal -->
-    <div id="quizModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">إضافة اختبار جديد</h3>
-            </div>
-            
-            <div class="form-group">
-                <label>عنوان الاختبار <span class="required">*</span></label>
-                <input type="text" id="quizTitle" placeholder="أدخل عنوان الاختبار">
-            </div>
-
-            <div class="form-group">
-                <label>المدة (دقائق)</label>
-                <input type="number" id="quizDuration" min="1" placeholder="15">
-            </div>
-
-            <div class="form-group">
-                <label>عدد الأسئلة</label>
-                <input type="number" id="quizQuestions" min="1" placeholder="10">
-            </div>
-
-            <div class="form-group">
-                <label>درجة النجاح (%)</label>
-                <input type="number" id="quizPassingScore" min="0" max="100" value="70">
-            </div>
-
-            <div class="modal-actions">
-                <button class="btn btn-secondary" onclick="closeQuizModal()">إلغاء</button>
-                <button class="btn btn-primary" onclick="saveQuizModal()">إضافة الاختبار</button>
-            </div>
-        </div>
-    </div>
-
     <script>
         // Global variables
-        let topicCounter = 0;
-        let currentTopicId = null;
+        let courses = [];
         let courseToDelete = null;
+        let editingCourseId = null;
+
+        // Load courses from localStorage
+        function loadCourses() {
+            const savedCourses = localStorage.getItem('courses');
+            if (savedCourses) {
+                courses = JSON.parse(savedCourses);
+            } else {
+                // Sample data
+                courses = [
+                    {
+                        id: 1,
+                        name: 'مقدمة في البرمجة',
+                        description: 'دورة تعليمية شاملة للمبتدئين',
+                        category: 'programming',
+                        level: 'beginner',
+                        price: 0,
+                        isFree: true,
+                        visibility: 'public',
+                        status: 'published',
+                        publishDate: '2025-01-15',
+                        instructor: '1',
+                        duration: 40
+                    },
+                    {
+                        id: 2,
+                        name: 'تطوير تطبيقات الويب',
+                        description: 'تعلم تطوير تطبيقات ويب احترافية',
+                        category: 'programming',
+                        level: 'intermediate',
+                        price: 99.99,
+                        isFree: false,
+                        visibility: 'protected',
+                        status: 'published',
+                        publishDate: '2025-02-01',
+                        instructor: '2',
+                        duration: 60
+                    },
+                    {
+                        id: 3,
+                        name: 'تصميم واجهات المستخدم',
+                        description: 'دورة متقدمة في تصميم UI/UX',
+                        category: 'design',
+                        level: 'advanced',
+                        price: 149.99,
+                        isFree: false,
+                        visibility: 'public',
+                        status: 'draft',
+                        publishDate: null,
+                        instructor: '3',
+                        duration: 50
+                    }
+                ];
+                saveCourses();
+            }
+            renderCourses();
+            updateStats();
+        }
+
+        // Save courses to localStorage
+        function saveCourses() {
+            localStorage.setItem('courses', JSON.stringify(courses));
+            updateStats();
+        }
+
+        // Update statistics
+        function updateStats() {
+            document.getElementById('totalCourses').textContent = courses.length;
+            document.getElementById('activeCourses').textContent = courses.filter(c => c.status === 'published').length;
+            document.getElementById('publishedCourses').textContent = courses.filter(c => c.status === 'published').length;
+            document.getElementById('draftCourses').textContent = courses.filter(c => c.status === 'draft').length;
+        }
+
+        // Render courses table
+        function renderCourses() {
+            const tbody = document.getElementById('courseTableBody');
+            tbody.innerHTML = '';
+
+            courses.forEach(course => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${course.name}</td>
+                    <td><span class="badge ${course.isFree ? 'free' : 'paid'}">${course.isFree ? 'مجاني' : 'مدفوع'}</span></td>
+                    <td><span class="badge ${course.visibility}">${getVisibilityLabel(course.visibility)}</span></td>
+                    <td>${getStatusLabel(course.status)}</td>
+                    <td>${course.publishDate || '-'}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-icon edit" onclick="editCourse(${course.id})">✏️ تعديل</button>
+                            <button class="btn-icon hide" onclick="toggleCourseStatus(${course.id})">👁️ ${course.status === 'published' ? 'إخفاء' : 'نشر'}</button>
+                            <button class="btn-icon delete" onclick="showDeleteModal(${course.id})">🗑️ حذف</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Helper functions
+        function getVisibilityLabel(visibility) {
+            const labels = {
+                'public': 'عام',
+                'private': 'خاص',
+                'protected': 'محمي'
+            };
+            return labels[visibility] || visibility;
+        }
+
+        function getStatusLabel(status) {
+            const labels = {
+                'published': 'نشط',
+                'draft': 'مسودة',
+                'archived': 'مؤرشف'
+            };
+            return labels[status] || status;
+        }
+
+        // Show alert
+        function showAlert(message, type = 'success') {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.textContent = message;
+            alertBox.className = `alert ${type} show`;
+            
+            setTimeout(() => {
+                alertBox.classList.remove('show');
+            }, 3000);
+        }
 
         // Character counters
         document.getElementById('courseName').addEventListener('input', function() {
@@ -1117,161 +1050,82 @@
 
         // Show/Hide course form
         function showCourseForm() {
+            editingCourseId = null;
             document.getElementById('courseListView').classList.add('hidden');
             document.getElementById('courseFormView').classList.add('active');
+            document.getElementById('formTitle').textContent = 'إضافة دورة جديدة';
+            document.getElementById('courseForm').reset();
+            document.getElementById('nameCount').textContent = '0/255';
+            document.getElementById('descCount').textContent = '0/500';
         }
 
         function hideCourseForm() {
             document.getElementById('courseFormView').classList.remove('active');
             document.getElementById('courseListView').classList.remove('hidden');
             document.getElementById('courseForm').reset();
+            editingCourseId = null;
         }
 
-        // Topic Management
-        function addTopic() {
-            document.getElementById('topicModal').classList.add('active');
-        }
+        // Edit Course
+        function editCourse(courseId) {
+            const course = courses.find(c => c.id === courseId);
+            if (!course) return;
 
-        function closeTopicModal() {
-            document.getElementById('topicModal').classList.remove('active');
-            document.getElementById('topicTitle').value = '';
-            document.getElementById('topicDescription').value = '';
-        }
-
-        function saveTopicModal() {
-            const title = document.getElementById('topicTitle').value;
-            const description = document.getElementById('topicDescription').value;
+            editingCourseId = courseId;
+            document.getElementById('formTitle').textContent = 'تعديل الدورة';
             
-            if (!title) {
-                alert('يرجى إدخال عنوان الموضوع');
-                return;
+            // Fill form with course data
+            document.getElementById('courseId').value = course.id;
+            document.getElementById('courseName').value = course.name;
+            document.getElementById('courseDescription').value = course.description;
+            document.getElementById('courseCategory').value = course.category;
+            document.getElementById('courseLevel').value = course.level;
+            document.getElementById('courseDuration').value = course.duration || '';
+            document.getElementById('courseLanguage').value = course.language || 'ar';
+            document.getElementById('isFree').checked = course.isFree;
+            document.getElementById('coursePrice').value = course.price || '';
+            document.getElementById('courseDiscount').value = course.discount || '';
+            document.getElementById('courseVisibility').value = course.visibility;
+            document.getElementById('publishDate').value = course.publishDate || '';
+            document.getElementById('courseInstructor').value = course.instructor;
+            document.getElementById('maxStudents').value = course.maxStudents || '';
+            document.getElementById('prerequisites').value = course.prerequisites || '';
+            
+            // Set status
+            if (course.status === 'draft') {
+                document.getElementById('statusDraft').checked = true;
+            } else {
+                document.getElementById('statusPublished').checked = true;
             }
-            
-            topicCounter++;
-            const topicId = 'topic-' + topicCounter;
-            
-            const topicHTML = `
-                <div class="topic-item" id="${topicId}">
-                    <div class="topic-header">
-                        <span class="topic-title">📖 ${title}</span>
-                        <div class="topic-actions">
-                            <button type="button" class="btn btn-small btn-success" onclick="addLesson('${topicId}')">➕ درس</button>
-                            <button type="button" class="btn btn-small btn-primary" onclick="addQuiz('${topicId}')">➕ اختبار</button>
-                            <button type="button" class="btn btn-small btn-danger" onclick="removeTopic('${topicId}')">🗑️</button>
-                        </div>
-                    </div>
-                    ${description ? `<p style="color: #718096; font-size: 14px; margin: 5px 0;">${description}</p>` : ''}
-                    <div class="lesson-list" id="${topicId}-lessons">
-                        <!-- Lessons will be added here -->
-                    </div>
-                    <div class="quiz-list" id="${topicId}-quizzes">
-                        <!-- Quizzes will be added here -->
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('topicsList').insertAdjacentHTML('beforeend', topicHTML);
-            closeTopicModal();
+
+            // Update character counts
+            document.getElementById('nameCount').textContent = course.name.length + '/255';
+            document.getElementById('descCount').textContent = course.description.length + '/500';
+
+            togglePricing();
+            togglePasswordField();
+            showCourseForm();
         }
 
-        function removeTopic(topicId) {
-            if (confirm('هل أنت متأكد من حذف هذا الموضوع؟')) {
-                document.getElementById(topicId).remove();
+        // Toggle course status
+        function toggleCourseStatus(courseId) {
+            const course = courses.find(c => c.id === courseId);
+            if (!course) return;
+
+            if (course.status === 'published') {
+                course.status = 'draft';
+                showAlert('تم إخفاء الدورة بنجاح', 'success');
+            } else {
+                course.status = 'published';
+                if (!course.publishDate) {
+                    const today = new Date().toISOString().split('T')[0];
+                    course.publishDate = today;
+                }
+                showAlert('تم نشر الدورة بنجاح', 'success');
             }
-        }
 
-        // Lesson Management
-        function addLesson(topicId) {
-            currentTopicId = topicId;
-            document.getElementById('lessonModal').classList.add('active');
-        }
-
-        function closeLessonModal() {
-            document.getElementById('lessonModal').classList.remove('active');
-            document.getElementById('lessonTitle').value = '';
-            document.getElementById('lessonType').value = 'video';
-            document.getElementById('lessonDuration').value = '';
-            document.getElementById('lessonContent').value = '';
-            currentTopicId = null;
-        }
-
-        function saveLessonModal() {
-            const title = document.getElementById('lessonTitle').value;
-            const type = document.getElementById('lessonType').value;
-            const duration = document.getElementById('lessonDuration').value;
-            
-            if (!title) {
-                alert('يرجى إدخال عنوان الدرس');
-                return;
-            }
-            
-            const lessonId = currentTopicId + '-lesson-' + Date.now();
-            const typeIcon = {
-                'video': '🎥',
-                'text': '📝',
-                'pdf': '📄',
-                'interactive': '💻'
-            };
-            
-            const lessonHTML = `
-                <div class="lesson-item" id="${lessonId}">
-                    <span>${typeIcon[type]} ${title} ${duration ? '(' + duration + ' دقيقة)' : ''}</span>
-                    <button type="button" class="btn-icon delete" onclick="removeLesson('${lessonId}')">🗑️</button>
-                </div>
-            `;
-            
-            document.getElementById(currentTopicId + '-lessons').insertAdjacentHTML('beforeend', lessonHTML);
-            closeLessonModal();
-        }
-
-        function removeLesson(lessonId) {
-            if (confirm('هل أنت متأكد من حذف هذا الدرس؟')) {
-                document.getElementById(lessonId).remove();
-            }
-        }
-
-        // Quiz Management
-        function addQuiz(topicId) {
-            currentTopicId = topicId;
-            document.getElementById('quizModal').classList.add('active');
-        }
-
-        function closeQuizModal() {
-            document.getElementById('quizModal').classList.remove('active');
-            document.getElementById('quizTitle').value = '';
-            document.getElementById('quizDuration').value = '';
-            document.getElementById('quizQuestions').value = '';
-            document.getElementById('quizPassingScore').value = '70';
-            currentTopicId = null;
-        }
-
-        function saveQuizModal() {
-            const title = document.getElementById('quizTitle').value;
-            const duration = document.getElementById('quizDuration').value;
-            const questions = document.getElementById('quizQuestions').value;
-            
-            if (!title) {
-                alert('يرجى إدخال عنوان الاختبار');
-                return;
-            }
-            
-            const quizId = currentTopicId + '-quiz-' + Date.now();
-            
-            const quizHTML = `
-                <div class="quiz-item" id="${quizId}">
-                    <span>📝 ${title} (${questions || '؟'} سؤال - ${duration || '؟'} دقيقة)</span>
-                    <button type="button" class="btn-icon delete" onclick="removeQuiz('${quizId}')">🗑️</button>
-                </div>
-            `;
-            
-            document.getElementById(currentTopicId + '-quizzes').insertAdjacentHTML('beforeend', quizHTML);
-            closeQuizModal();
-        }
-
-        function removeQuiz(quizId) {
-            if (confirm('هل أنت متأكد من حذف هذا الاختبار؟')) {
-                document.getElementById(quizId).remove();
-            }
+            saveCourses();
+            renderCourses();
         }
 
         // Delete Course
@@ -1290,64 +1144,96 @@
             const reason = document.getElementById('deletionReason').value;
             
             if (!reason || reason.trim().length < 10) {
-                alert('يرجى تقديم مبرر قانوني واضح (10 أحرف على الأقل)');
+                showAlert('يرجى تقديم مبرر قانوني واضح (10 أحرف على الأقل)', 'error');
                 return;
             }
             
-            // Here you would normally send the deletion request to the server
-            console.log('Deleting course:', courseToDelete, 'Reason:', reason);
-            
-            alert('تم حذف الدورة بنجاح');
+            courses = courses.filter(c => c.id !== courseToDelete);
+            saveCourses();
+            renderCourses();
             closeDeleteModal();
-        }
-
-        // Edit Course
-        function editCourse(courseId) {
-            console.log('Editing course:', courseId);
-            showCourseForm();
-            // Here you would load the course data and populate the form
-        }
-
-        // Hide Course
-        function hideCourse(courseId) {
-            if (confirm('هل تريد إخفاء هذه الدورة؟')) {
-                console.log('Hiding course:', courseId);
-                alert('تم إخفاء الدورة بنجاح');
-            }
+            showAlert('تم حذف الدورة بنجاح', 'success');
         }
 
         // Save Draft
         function saveDraft() {
-            console.log('Saving draft...');
-            alert('تم حفظ المسودة بنجاح');
+            const formData = getFormData();
+            formData.status = 'draft';
+            
+            if (editingCourseId) {
+                const index = courses.findIndex(c => c.id === editingCourseId);
+                if (index !== -1) {
+                    courses[index] = { ...courses[index], ...formData };
+                    showAlert('تم تحديث المسودة بنجاح', 'success');
+                }
+            } else {
+                formData.id = Date.now();
+                courses.push(formData);
+                showAlert('تم حفظ المسودة بنجاح', 'success');
+            }
+            
+            saveCourses();
+            renderCourses();
+            hideCourseForm();
+        }
+
+        // Get form data
+        function getFormData() {
+            return {
+                name: document.getElementById('courseName').value,
+                description: document.getElementById('courseDescription').value,
+                category: document.getElementById('courseCategory').value,
+                level: document.getElementById('courseLevel').value,
+                duration: document.getElementById('courseDuration').value,
+                language: document.getElementById('courseLanguage').value,
+                isFree: document.getElementById('isFree').checked,
+                price: document.getElementById('isFree').checked ? 0 : parseFloat(document.getElementById('coursePrice').value) || 0,
+                discount: document.getElementById('courseDiscount').value,
+                visibility: document.getElementById('courseVisibility').value,
+                password: document.getElementById('coursePassword').value,
+                publishDate: document.getElementById('publishDate').value,
+                status: document.querySelector('input[name="status"]:checked').value,
+                instructor: document.getElementById('courseInstructor').value,
+                maxStudents: document.getElementById('maxStudents').value,
+                prerequisites: document.getElementById('prerequisites').value
+            };
         }
 
         // Form Submission
         document.getElementById('courseForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Validate required fields
-            const courseName = document.getElementById('courseName').value;
-            const courseDescription = document.getElementById('courseDescription').value;
-            const courseCategory = document.getElementById('courseCategory').value;
-            const courseLevel = document.getElementById('courseLevel').value;
-            const courseInstructor = document.getElementById('courseInstructor').value;
+            const formData = getFormData();
             
-            if (!courseName || !courseDescription || !courseCategory || !courseLevel || !courseInstructor) {
-                alert('يرجى ملء جميع الحقول المطلوبة');
+            if (!formData.name || !formData.description || !formData.category || !formData.level || !formData.instructor) {
+                showAlert('يرجى ملء جميع الحقول المطلوبة', 'error');
                 return;
             }
             
-            // Here you would normally send the form data to the server
-            console.log('Publishing course...');
-            alert('تم نشر الدورة بنجاح');
+            if (editingCourseId) {
+                const index = courses.findIndex(c => c.id === editingCourseId);
+                if (index !== -1) {
+                    courses[index] = { ...courses[index], ...formData };
+                    showAlert('تم تحديث الدورة بنجاح', 'success');
+                }
+            } else {
+                formData.id = Date.now();
+                if (formData.status === 'published' && !formData.publishDate) {
+                    formData.publishDate = new Date().toISOString().split('T')[0];
+                }
+                courses.push(formData);
+                showAlert('تم إضافة الدورة بنجاح', 'success');
+            }
+            
+            saveCourses();
+            renderCourses();
             hideCourseForm();
         });
 
         // Search functionality
         document.getElementById('searchBox').addEventListener('input', function(e) {
             const searchTerm = e.target.value.toLowerCase();
-            const rows = document.querySelectorAll('.course-table tbody tr');
+            const rows = document.querySelectorAll('#courseTableBody tr');
             
             rows.forEach(row => {
                 const courseName = row.cells[0].textContent.toLowerCase();
@@ -1359,9 +1245,47 @@
             });
         });
 
+        // Apply filters
+        function applyFilters() {
+            const statusFilters = Array.from(document.querySelectorAll('input[name="status"]:checked')).map(cb => cb.value);
+            const pricingFilter = document.querySelector('input[name="pricing"]:checked').value;
+            const visibilityFilters = Array.from(document.querySelectorAll('input[name="visibility"]:checked')).map(cb => cb.value);
+            
+            const rows = document.querySelectorAll('#courseTableBody tr');
+            
+            rows.forEach((row, index) => {
+                const course = courses[index];
+                if (!course) return;
+                
+                let showRow = true;
+                
+                // Status filter
+                if (statusFilters.length > 0 && !statusFilters.includes(course.status)) {
+                    showRow = false;
+                }
+                
+                // Pricing filter
+                if (pricingFilter === 'free' && !course.isFree) {
+                    showRow = false;
+                } else if (pricingFilter === 'paid' && course.isFree) {
+                    showRow = false;
+                }
+                
+                // Visibility filter
+                if (visibilityFilters.length > 0 && !visibilityFilters.includes(course.visibility)) {
+                    showRow = false;
+                }
+                
+                row.style.display = showRow ? '' : 'none';
+            });
+        }
+
         // Initialize
-        togglePricing();
-        togglePasswordField();
+        window.addEventListener('DOMContentLoaded', function() {
+            loadCourses();
+            togglePricing();
+            togglePasswordField();
+        });
     </script>
 </body>
 </html>
