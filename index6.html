@@ -1,0 +1,1751 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم الطالب</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .student-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid white;
+            margin: 0 auto 15px;
+            display: block;
+            object-fit: cover;
+        }
+
+        .student-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .student-email {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .nav-menu {
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #2d3748;
+            border-right: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: #f7fafc;
+            border-right-color: #667eea;
+        }
+
+        .nav-item.active {
+            background: #eef2ff;
+            border-right-color: #667eea;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            width: 25px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-right: 280px;
+            padding: 30px;
+        }
+
+        .page-section {
+            display: none;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        .page-header {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .page-title {
+            font-size: 28px;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .page-subtitle {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            color: #2d3748;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-icon {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        /* Profile Info */
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .profile-item {
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 8px;
+            border-right: 3px solid #667eea;
+        }
+
+        .profile-label {
+            font-size: 12px;
+            color: #718096;
+            margin-bottom: 5px;
+        }
+
+        .profile-value {
+            font-size: 16px;
+            color: #2d3748;
+            font-weight: 500;
+        }
+
+        .profile-picture-section {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid #667eea;
+            object-fit: cover;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #2d3748;
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        /* Course Cards */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .course-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        .course-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .course-content {
+            padding: 20px;
+        }
+
+        .course-title {
+            font-size: 18px;
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .course-description {
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: #718096;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+        }
+
+        .progress-text {
+            font-size: 12px;
+            color: #718096;
+            margin-top: 5px;
+        }
+
+        .course-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        /* Reviews */
+        .review-card {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-right: 3px solid #667eea;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .review-author {
+            font-weight: bold;
+            color: #2d3748;
+        }
+
+        .review-date {
+            font-size: 12px;
+            color: #718096;
+        }
+
+        .review-rating {
+            color: #f6ad55;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .review-comment {
+            color: #4a5568;
+            line-height: 1.6;
+        }
+
+        .review-course {
+            font-size: 12px;
+            color: #667eea;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        /* Quiz Attempts */
+        .quiz-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .quiz-table th,
+        .quiz-table td {
+            padding: 15px;
+            text-align: right;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .quiz-table th {
+            background: #f7fafc;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .quiz-table tr:hover {
+            background: #f7fafc;
+        }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .badge.success {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .badge.failed {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .badge.pending {
+            background: #feebc8;
+            color: #7c2d12;
+        }
+
+        .badge.locked {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        /* Search Bar */
+        .search-section {
+            margin-bottom: 25px;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            border-color: #667eea;
+            background: #eef2ff;
+            color: #667eea;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #718096;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state-text {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .empty-state-subtext {
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .main-content {
+                margin-right: 0;
+            }
+
+            .dashboard-container {
+                flex-direction: column;
+            }
+
+            .courses-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Share Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            color: #2d3748;
+            margin-bottom: 20px;
+        }
+
+        .share-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .share-btn {
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .share-btn:hover {
+            border-color: #667eea;
+            background: #eef2ff;
+        }
+
+        .share-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .share-label {
+            font-size: 12px;
+            color: #4a5568;
+        }
+
+        .copy-link {
+            margin-top: 20px;
+        }
+
+        .copy-link input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect fill='%23667eea' width='80' height='80' rx='40'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='32' font-family='Arial'%3EAM%3C/text%3E%3C/svg%3E" alt="Student Avatar" class="student-avatar" id="sidebarAvatar">
+                <div class="student-name" id="sidebarName">أحمد محمد علي</div>
+                <div class="student-email" id="sidebarEmail">ahmed.mohamed@email.com</div>
+            </div>
+            
+            <nav class="nav-menu">
+                <div class="nav-item active" onclick="showSection('overview')">
+                    <span class="nav-icon">📊</span>
+                    <span>نظرة عامة</span>
+                </div>
+                <div class="nav-item" onclick="showSection('profile')">
+                    <span class="nav-icon">👤</span>
+                    <span>الملف الشخصي</span>
+                </div>
+                <div class="nav-item" onclick="showSection('courses')">
+                    <span class="nav-icon">📚</span>
+                    <span>دوراتي</span>
+                </div>
+                <div class="nav-item" onclick="showSection('browse')">
+                    <span class="nav-icon">🔍</span>
+                    <span>تصفح الدورات</span>
+                </div>
+                <div class="nav-item" onclick="showSection('reviews')">
+                    <span class="nav-icon">⭐</span>
+                    <span>تقييماتي</span>
+                </div>
+                <div class="nav-item" onclick="showSection('wishlist')">
+                    <span class="nav-icon">❤️</span>
+                    <span>قائمة الرغبات</span>
+                </div>
+                <div class="nav-item" onclick="showSection('quizzes')">
+                    <span class="nav-icon">📝</span>
+                    <span>الاختبارات</span>
+                </div>
+                <div class="nav-item" onclick="logout()">
+                    <span class="nav-icon">🚪</span>
+                    <span>تسجيل الخروج</span>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Overview Section -->
+            <section id="overview" class="page-section active">
+                <div class="page-header">
+                    <h1 class="page-title">مرحباً، أحمد! 👋</h1>
+                    <p class="page-subtitle">هذا ملخص لأنشطتك التعليمية</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📚</div>
+                        <div class="stat-value" id="enrolledCount">5</div>
+                        <div class="stat-label">دورات مسجلة</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-value" id="completedCount">2</div>
+                        <div class="stat-label">دورات مكتملة</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⭐</div>
+                        <div class="stat-value" id="reviewsCount">3</div>
+                        <div class="stat-label">تقييمات مكتوبة</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">❤️</div>
+                        <div class="stat-value" id="wishlistCount">4</div>
+                        <div class="stat-label">في قائمة الرغبات</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">الدورات قيد التقدم</h3>
+                    <div id="progressCourses"></div>
+                </div>
+            </section>
+
+            <!-- Profile Section -->
+            <section id="profile" class="page-section">
+                <div class="page-header">
+                    <h1 class="page-title">الملف الشخصي</h1>
+                    <p class="page-subtitle">معلوماتك الشخصية المسجلة</p>
+                </div>
+
+                <div class="card">
+                    <div class="profile-picture-section">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Crect fill='%23667eea' width='150' height='150' rx='75'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='60' font-family='Arial'%3EAM%3C/text%3E%3C/svg%3E" alt="Profile Picture" class="profile-picture" id="profilePicture">
+                        <div>
+                            <button class="btn btn-primary">تغيير الصورة</button>
+                        </div>
+                    </div>
+
+                    <h3 class="card-title">المعلومات الشخصية</h3>
+                    <div class="profile-grid" id="profileData"></div>
+                    
+                    <div style="margin-top: 25px; text-align: center;">
+                        <button class="btn btn-primary" onclick="editProfile()">تعديل الملف الشخصي</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- My Courses Section -->
+            <section id="courses" class="page-section">
+                <div class="page-header">
+                    <h1 class="page-title">دوراتي</h1>
+                    <p class="page-subtitle">الدورات التي سجلت بها</p>
+                </div>
+
+                <div class="filters">
+                    <button class="filter-btn active" onclick="filterMyCourses('all')">الكل</button>
+                    <button class="filter-btn" onclick="filterMyCourses('in-progress')">قيد التقدم</button>
+                    <button class="filter-btn" onclick="filterMyCourses('completed')">مكتملة</button>
+                </div>
+
+                <div class="courses-grid" id="myCoursesGrid"></div>
+            </section>
+
+            <!-- Browse Courses Section -->
+            <section id="browse" class="page-section">
+                <div class="page-header">
+                    <h1 class="page-title">تصفح الدورات</h1>
+                    <p class="page-subtitle">اكتشف دورات جديدة وسجل فيها</p>
+                </div>
+
+                <div class="search-section">
+                    <input type="text" class="search-bar" placeholder="🔍 ابحث عن دورة بالاسم..." id="courseSearch" oninput="searchCourses()">
+                    
+                    <div class="filters">
+                        <button class="filter-btn active" onclick="filterBrowseCourses('all')">الكل</button>
+                        <button class="filter-btn" onclick="filterBrowseCourses('free')">مجانية</button>
+                        <button class="filter-btn" onclick="filterBrowseCourses('paid')">مدفوعة</button>
+                        <button class="filter-btn" onclick="filterBrowseCourses('programming')">البرمجة</button>
+                        <button class="filter-btn" onclick="filterBrowseCourses('design')">التصميم</button>
+                    </div>
+                </div>
+
+                <div class="courses-grid" id="browseCоursesGrid"></div>
+            </section>
+
+            <!-- Reviews Section -->
+            <section id="reviews" class="page-section">
+                <div class="page-header">
+                    <h1 class="page-title">تقييماتي</h1>
+                    <p class="page-subtitle">التقييمات التي كتبتها على الدورات</p>
+                </div>
+
+                <div class="card">
+                    <div id="reviewsList"></div>
+                </div>
+            </section>
+
+            <!-- Wishlist Section -->
+            <section id="wishlist" class="page-section">
+                <div class="page-header">
+                    <h1 class="page-title">قائمة الرغبات</h1>
+                    <p class="page-subtitle">الدورات التي تريد الالتحاق بها لاحقاً</p>
+                </div>
+
+                <div class="courses-grid" id="wishlistGrid"></div>
+            </section>
+
+            <!-- Quizzes Section -->
+            <section id="quizzes" class="page-section">
+                <div class="page-header">
+                    <h1 class="page-title">الاختبارات</h1>
+                    <p class="page-subtitle">محاولاتك ودرجاتك في الاختبارات</p>
+                </div>
+
+                <div class="card">
+                    <table class="quiz-table">
+                        <thead>
+                            <tr>
+                                <th>الدورة</th>
+                                <th>الاختبار</th>
+                                <th>التاريخ</th>
+                                <th>المحاولة</th>
+                                <th>الدرجة</th>
+                                <th>النتيجة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="quizzesTable"></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Share Course Modal -->
+    <div id="shareModal" class="modal">
+        <div class="modal-content">
+            <h3 class="modal-title">مشاركة الدورة</h3>
+            <p style="color: #718096; margin-bottom: 20px;">شارك هذه الدورة مع أصدقائك</p>
+            
+            <div class="share-options">
+                <button class="share-btn" onclick="shareVia('whatsapp')">
+                    <div class="share-icon">📱</div>
+                    <div class="share-label">واتساب</div>
+                </button>
+                <button class="share-btn" onclick="shareVia('facebook')">
+                    <div class="share-icon">📘</div>
+                    <div class="share-label">فيسبوك</div>
+                </button>
+                <button class="share-btn" onclick="shareVia('twitter')">
+                    <div class="share-icon">🐦</div>
+                    <div class="share-label">تويتر</div>
+                </button>
+                <button class="share-btn" onclick="shareVia('telegram')">
+                    <div class="share-icon">✈️</div>
+                    <div class="share-label">تيليجرام</div>
+                </button>
+                <button class="share-btn" onclick="shareVia('email')">
+                    <div class="share-icon">📧</div>
+                    <div class="share-label">البريد</div>
+                </button>
+                <button class="share-btn" onclick="shareVia('linkedin')">
+                    <div class="share-icon">💼</div>
+                    <div class="share-label">لينكد إن</div>
+                </button>
+            </div>
+
+            <div class="copy-link">
+                <label style="font-size: 14px; color: #4a5568; margin-bottom: 10px; display: block;">أو انسخ الرابط</label>
+                <input type="text" id="shareLink" readonly>
+                <button class="btn btn-primary" style="width: 100%;" onclick="copyLink()">📋 نسخ الرابط</button>
+            </div>
+
+            <button class="btn btn-secondary" style="width: 100%; margin-top: 15px;" onclick="closeShareModal()">إغلاق</button>
+        </div>
+    </div>
+
+    <script>
+        // Sample Data
+        const studentData = {
+            fullName: "أحمد محمد علي حسن",
+            nationalId: "29501011234567",
+            phone: "+20 100 123 4567",
+            email: "ahmed.mohamed@email.com",
+            dateOfBirth: "1995-01-15",
+            address: "القاهرة، مصر - شارع النيل، المعادي",
+            picture: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Crect fill='%23667eea' width='150' height='150' rx='75'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='60' font-family='Arial'%3EAM%3C/text%3E%3C/svg%3E"
+        };
+
+        let enrolledCourses = [
+            {
+                id: 1,
+                title: "تطوير تطبيقات الويب المتقدمة",
+                description: "تعلم بناء تطبيقات ويب حديثة باستخدام أحدث التقنيات",
+                instructor: "د. محمد أحمد",
+                category: "programming",
+                price: 0,
+                isFree: true,
+                rating: 4.9,
+                reviews: 189,
+                progress: 45,
+                enrolled: true,
+                content: "25 درس فيديو + 10 مشروع",
+                duration: "35 ساعة"
+            },
+            {
+                id: 3,
+                title: "البرمجة بلغة Python للمبتدئين",
+                description: "ابدأ رحلتك في عالم البرمجة مع لغة Python",
+                instructor: "أحمد حسن",
+                category: "programming",
+                price: 0,
+                isFree: true,
+                rating: 4.7,
+                reviews: 567,
+                progress: 100,
+                enrolled: true,
+                content: "45 درس + 20 تمرين",
+                duration: "30 ساعة"
+            },
+            {
+                id: 4,
+                title: "التسويق الرقمي الشامل",
+                description: "استراتيجيات التسويق الرقمي للعصر الحديث",
+                instructor: "نور الدين",
+                category: "marketing",
+                price: 149.99,
+                isFree: false,
+                rating: 4.6,
+                reviews: 324,
+                progress: 30,
+                enrolled: true,
+                content: "35 درس + 8 دراسات حالة",
+                duration: "28 ساعة"
+            },
+            {
+                id: 5,
+                title: "تطوير تطبيقات الموبايل",
+                description: "بناء تطبيقات موبايل احترافية لنظامي iOS و Android",
+                instructor: "خالد محمود",
+                category: "programming",
+                price: 249.99,
+                isFree: false,
+                rating: 4.8,
+                reviews: 198,
+                progress: 100,
+                enrolled: true,
+                content: "50 درس + 15 مشروع",
+                duration: "55 ساعة"
+            }
+        ];
+
+        let availableCourses = [
+            {
+                id: 6,
+                title: "الذكاء الاصطناعي وتعلم الآلة",
+                description: "مقدمة شاملة للذكاء الاصطناعي وتطبيقاته العملية",
+                instructor: "د. ياسمين محمد",
+                category: "programming",
+                price: 299.99,
+                isFree: false,
+                rating: 4.9,
+                reviews: 445,
+                enrolled: false,
+                inWishlist: true,
+                content: "60 درس + 25 مشروع عملي",
+                duration: "70 ساعة"
+            },
+            {
+                id: 7,
+                title: "التصوير الفوتوغرافي الاحترافي",
+                description: "من المبتدئ إلى المحترف في التصوير الفوتوغرافي",
+                instructor: "عمر السيد",
+                category: "design",
+                price: 0,
+                isFree: true,
+                rating: 4.7,
+                reviews: 234,
+                enrolled: false,
+                inWishlist: true,
+                content: "40 درس + 30 تمرين عملي",
+                duration: "25 ساعة"
+            },
+            {
+                id: 8,
+                title: "إدارة المشاريع الاحترافية",
+                description: "تعلم إدارة المشاريع وفق المعايير العالمية",
+                instructor: "ليلى أحمد",
+                category: "business",
+                price: 179.99,
+                isFree: false,
+                rating: 4.8,
+                reviews: 312,
+                enrolled: false,
+                inWishlist: false,
+                content: "38 درس + 12 دراسة حالة",
+                duration: "32 ساعة"
+            },
+            {
+                id: 9,
+                title: "تطوير الألعاب الإلكترونية",
+                description: "تعلم تصميم وبرمجة الألعاب من الصفر",
+                instructor: "كريم وليد",
+                category: "programming",
+                price: 0,
+                isFree: true,
+                rating: 4.6,
+                reviews: 189,
+                enrolled: false,
+                inWishlist: true,
+                content: "55 درس + 10 مشاريع ألعاب",
+                duration: "48 ساعة"
+            },
+            {
+                id: 10,
+                title: "التجارة الإلكترونية من الصفر",
+                description: "أنشئ متجرك الإلكتروني وابدأ البيع اليوم",
+                instructor: "منى حسام",
+                category: "business",
+                price: 159.99,
+                isFree: false,
+                rating: 4.5,
+                reviews: 276,
+                enrolled: false,
+                inWishlist: true,
+                content: "32 درس + 15 ورشة عمل",
+                duration: "26 ساعة"
+            }
+        ];
+
+        let studentReviews = [
+            {
+                id: 1,
+                courseId: 3,
+                courseName: "البرمجة بلغة Python للمبتدئين",
+                rating: 5,
+                comment: "دورة رائعة جداً! الشرح واضح ومفصل، والمدرب متمكن من المادة. أنصح بها بشدة للمبتدئين",
+                date: "2025-03-15"
+            },
+            {
+                id: 2,
+                courseId: 1,
+                courseName: "تطوير تطبيقات الويب المتقدمة",
+                rating: 4,
+                comment: "محتوى قيم وشامل. استفدت كثيراً من الأمثلة العملية والمشاريع التطبيقية",
+                date: "2025-04-20"
+            },
+            {
+                id: 3,
+                courseId: 5,
+                courseName: "تطوير تطبيقات الموبايل",
+                rating: 5,
+                comment: "من أفضل الدورات التي حضرتها! المحتوى محدث ويواكب أحدث التقنيات في تطوير تطبيقات الموبايل",
+                date: "2025-05-10"
+            }
+        ];
+
+        let quizAttempts = [
+            {
+                id: 1,
+                courseId: 3,
+                courseName: "البرمجة بلغة Python للمبتدئين",
+                quizName: "الاختبار النهائي",
+                attempt: 1,
+                score: 85,
+                totalScore: 100,
+                date: "2025-03-20",
+                status: "success",
+                isLocked: false
+            },
+            {
+                id: 2,
+                courseId: 3,
+                courseName: "البرمجة بلغة Python للمبتدئين",
+                quizName: "الاختبار النهائي",
+                attempt: 2,
+                score: 95,
+                totalScore: 100,
+                date: "2025-03-22",
+                status: "success",
+                isLocked: false
+            },
+            {
+                id: 3,
+                courseId: 1,
+                courseName: "تطوير تطبيقات الويب المتقدمة",
+                quizName: "اختبار JavaScript المتقدم",
+                attempt: 1,
+                score: 72,
+                totalScore: 100,
+                date: "2025-04-15",
+                status: "success",
+                isLocked: false
+            },
+            {
+                id: 4,
+                courseId: 1,
+                courseName: "تطوير تطبيقات الويب المتقدمة",
+                quizName: "اختبار React.js",
+                attempt: 0,
+                score: 0,
+                totalScore: 100,
+                date: null,
+                status: "locked",
+                isLocked: true,
+                lockReason: "يجب إكمال الموضوع الحالي أولاً"
+            },
+            {
+                id: 5,
+                courseId: 2,
+                courseName: "تصميم واجهات المستخدم UI/UX",
+                quizName: "مبادئ التصميم",
+                attempt: 1,
+                score: 68,
+                totalScore: 100,
+                date: "2025-05-01",
+                status: "failed",
+                isLocked: false
+            },
+            {
+                id: 6,
+                courseId: 2,
+                courseName: "تصميم واجهات المستخدم UI/UX",
+                quizName: "مبادئ التصميم",
+                attempt: 2,
+                score: 88,
+                totalScore: 100,
+                date: "2025-05-05",
+                status: "success",
+                isLocked: false
+            },
+            {
+                id: 7,
+                courseId: 5,
+                courseName: "تطوير تطبيقات الموبايل",
+                quizName: "الاختبار الشامل",
+                attempt: 1,
+                score: 92,
+                totalScore: 100,
+                date: "2025-05-12",
+                status: "success",
+                isLocked: false
+            }
+        ];
+
+        let currentShareCourse = null;
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', function() {
+            loadProfileData();
+            renderMyCourses();
+            renderBrowseCourses();
+            renderReviews();
+            renderWishlist();
+            renderQuizzes();
+            renderProgressCourses();
+            updateDashboardStats();
+        });
+
+        // Navigation
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Set active nav item
+            event.currentTarget.classList.add('active');
+        }
+
+        // Load Profile Data
+        function loadProfileData() {
+            const profileGrid = document.getElementById('profileData');
+            
+            const fields = [
+                { label: 'الاسم الكامل', value: studentData.fullName, icon: '👤' },
+                { label: 'الرقم القومي', value: studentData.nationalId, icon: '🆔' },
+                { label: 'رقم الهاتف', value: studentData.phone, icon: '📱' },
+                { label: 'البريد الإلكتروني', value: studentData.email, icon: '📧' },
+                { label: 'تاريخ الميلاد', value: studentData.dateOfBirth, icon: '📅' },
+                { label: 'العنوان', value: studentData.address, icon: '📍' }
+            ];
+
+            profileGrid.innerHTML = fields.map(field => `
+                <div class="profile-item">
+                    <div class="profile-label">${field.icon} ${field.label}</div>
+                    <div class="profile-value">${field.value}</div>
+                </div>
+            `).join('');
+
+            // Update sidebar
+            document.getElementById('sidebarName').textContent = studentData.fullName.split(' ').slice(0, 2).join(' ');
+            document.getElementById('sidebarEmail').textContent = studentData.email;
+        }
+
+        // Render My Courses
+        function renderMyCourses() {
+            const grid = document.getElementById('myCoursesGrid');
+            
+            if (enrolledCourses.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📚</div>
+                        <div class="empty-state-text">لم تسجل في أي دورة بعد</div>
+                        <div class="empty-state-subtext">ابدأ رحلتك التعليمية بالتسجيل في دورة</div>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = enrolledCourses.map(course => `
+                <div class="course-card" data-status="${course.progress === 100 ? 'completed' : 'in-progress'}">
+                    <div class="course-image"></div>
+                    <div class="course-content">
+                        <h3 class="course-title">${course.title}</h3>
+                        <p class="course-description">${course.description}</p>
+                        
+                        <div class="course-meta">
+                            <span>👨‍🏫 ${course.instructor}</span>
+                            <span>⏱️ ${course.duration}</span>
+                        </div>
+
+                        <div class="course-meta">
+                            <span>⭐ ${course.rating} (${course.reviews} تقييم)</span>
+                            <span>${course.content}</span>
+                        </div>
+
+                        <div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${course.progress}%"></div>
+                            </div>
+                            <div class="progress-text">اكتمل ${course.progress}%</div>
+                        </div>
+
+                        <div class="course-actions">
+                            <button class="btn btn-primary btn-small" onclick="continueCourse(${course.id})">
+                                ${course.progress === 100 ? 'مراجعة الدورة' : 'متابعة التعلم'} →
+                            </button>
+                            ${course.progress === 100 && !hasReview(course.id) ? 
+                                `<button class="btn btn-secondary btn-small" onclick="writeReview(${course.id})">✍️ كتابة تقييم</button>` : 
+                                ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render Browse Courses
+        function renderBrowseCourses() {
+            const grid = document.getElementById('browseCоursesGrid');
+            
+            const allCourses = [...enrolledCourses, ...availableCourses];
+            
+            grid.innerHTML = allCourses.map(course => `
+                <div class="course-card" data-category="${course.category}" data-type="${course.isFree ? 'free' : 'paid'}">
+                    <div class="course-image"></div>
+                    <div class="course-content">
+                        <h3 class="course-title">${course.title}</h3>
+                        <p class="course-description">${course.description}</p>
+                        
+                        <div class="course-meta">
+                            <span>👨‍🏫 ${course.instructor}</span>
+                            <span>⏱️ ${course.duration}</span>
+                        </div>
+
+                        <div class="course-meta">
+                            <span>⭐ ${course.rating} (${course.reviews} تقييم)</span>
+                            <span>${course.isFree ? '🆓 مجاني' : '💰 ' + course.price + ' ج.م'}</span>
+                        </div>
+
+                        <div class="course-actions">
+                            ${course.enrolled ? 
+                                `<button class="btn btn-primary btn-small" onclick="continueCourse(${course.id})">متابعة التعلم →</button>` :
+                                course.isFree ?
+                                    `<button class="btn btn-primary btn-small" onclick="enrollCourse(${course.id})">ابدأ التعلم مجاناً</button>` :
+                                    `<button class="btn btn-primary btn-small" onclick="enrollCourse(${course.id})">سجل الآن - ${course.price} ج.م</button>`
+                            }
+                            ${!course.enrolled ? 
+                                `<button class="btn btn-secondary btn-small" onclick="toggleWishlist(${course.id})">
+                                    ${course.inWishlist ? '💔' : '❤️'} ${course.inWishlist ? 'إزالة' : 'أضف للمفضلة'}
+                                </button>` : 
+                                `<button class="btn btn-secondary btn-small" onclick="shareCourse(${course.id})">📤 مشاركة</button>`
+                            }
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render Reviews
+        function renderReviews() {
+            const reviewsList = document.getElementById('reviewsList');
+            
+            if (studentReviews.length === 0) {
+                reviewsList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⭐</div>
+                        <div class="empty-state-text">لم تكتب أي تقييمات بعد</div>
+                        <div class="empty-state-subtext">شارك تجربتك مع الدورات التي أكملتها</div>
+                    </div>
+                `;
+                return;
+            }
+
+            reviewsList.innerHTML = studentReviews.map(review => `
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="review-author">${studentData.fullName}</span>
+                        <span class="review-date">${review.date}</span>
+                    </div>
+                    <div class="review-rating">
+                        ${'⭐'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}
+                    </div>
+                    <p class="review-comment">${review.comment}</p>
+                    <div class="review-course">📚 ${review.courseName}</div>
+                </div>
+            `).join('');
+        }
+
+        // Render Wishlist
+        function renderWishlist() {
+            const grid = document.getElementById('wishlistGrid');
+            const wishlistCourses = availableCourses.filter(c => c.inWishlist);
+            
+            if (wishlistCourses.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">❤️</div>
+                        <div class="empty-state-text">قائمة الرغبات فارغة</div>
+                        <div class="empty-state-subtext">أضف دورات تريد الالتحاق بها لاحقاً</div>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = wishlistCourses.map(course => `
+                <div class="course-card">
+                    <div class="course-image"></div>
+                    <div class="course-content">
+                        <h3 class="course-title">${course.title}</h3>
+                        <p class="course-description">${course.description}</p>
+                        
+                        <div class="course-meta">
+                            <span>👨‍🏫 ${course.instructor}</span>
+                            <span>⏱️ ${course.duration}</span>
+                        </div>
+
+                        <div class="course-meta">
+                            <span>⭐ ${course.rating} (${course.reviews} تقييم)</span>
+                            <span>${course.isFree ? '🆓 مجاني' : '💰 ' + course.price + ' ج.م'}</span>
+                        </div>
+
+                        <div class="course-actions">
+                            ${course.isFree ?
+                                `<button class="btn btn-primary btn-small" onclick="enrollCourse(${course.id})">ابدأ التعلم مجاناً</button>` :
+                                `<button class="btn btn-primary btn-small" onclick="enrollCourse(${course.id})">سجل الآن - ${course.price} ج.م</button>`
+                            }
+                            <button class="btn btn-danger btn-small" onclick="removeFromWishlist(${course.id})">
+                                🗑️ إزالة
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render Quizzes
+        function renderQuizzes() {
+            const table = document.getElementById('quizzesTable');
+            
+            if (quizAttempts.length === 0) {
+                table.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px; color: #718096;">
+                            <div style="font-size: 48px; margin-bottom: 15px;">📝</div>
+                            <div style="font-size: 16px;">لم تحاول أي اختبارات بعد</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            table.innerHTML = quizAttempts.map(attempt => `
+                <tr>
+                    <td>${attempt.courseName}</td>
+                    <td>${attempt.quizName}</td>
+                    <td>${attempt.date || '-'}</td>
+                    <td>${attempt.isLocked ? '-' : 'المحاولة ' + attempt.attempt}</td>
+                    <td>${attempt.isLocked ? '-' : attempt.score + '/' + attempt.totalScore}</td>
+                    <td>
+                        ${attempt.isLocked ? 
+                            `<span class="badge locked">🔒 مقفل</span>` :
+                            attempt.score >= 70 ? 
+                                `<span class="badge success">✅ نجح</span>` : 
+                                `<span class="badge failed">❌ راسب</span>`
+                        }
+                    </td>
+                    <td>
+                        ${attempt.isLocked ? 
+                            `<button class="btn btn-secondary btn-small" disabled title="${attempt.lockReason}">🔒 مقفل</button>` :
+                            `<button class="btn btn-primary btn-small" onclick="retakeQuiz(${attempt.id})">🔄 إعادة المحاولة</button>`
+                        }
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Render Progress Courses
+        function renderProgressCourses() {
+            const container = document.getElementById('progressCourses');
+            const inProgressCourses = enrolledCourses.filter(c => c.progress > 0 && c.progress < 100);
+            
+            if (inProgressCourses.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📚</div>
+                        <div class="empty-state-text">لا توجد دورات قيد التقدم</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = inProgressCourses.map(course => `
+                <div style="margin-bottom: 20px; padding: 15px; background: #f7fafc; border-radius: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h4 style="color: #2d3748; margin: 0;">${course.title}</h4>
+                        <button class="btn btn-primary btn-small" onclick="continueCourse(${course.id})">متابعة →</button>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${course.progress}%"></div>
+                    </div>
+                    <div class="progress-text">اكتمل ${course.progress}%</div>
+                </div>
+            `).join('');
+        }
+
+        // Update Dashboard Stats
+        function updateDashboardStats() {
+            document.getElementById('enrolledCount').textContent = enrolledCourses.length;
+            document.getElementById('completedCount').textContent = enrolledCourses.filter(c => c.progress === 100).length;
+            document.getElementById('reviewsCount').textContent = studentReviews.length;
+            document.getElementById('wishlistCount').textContent = availableCourses.filter(c => c.inWishlist).length;
+        }
+
+        // Helper Functions
+        function hasReview(courseId) {
+            return studentReviews.some(r => r.courseId === courseId);
+        }
+
+        // Action Functions
+        function continueCourse(courseId) {
+            alert('جاري فتح الدورة...');
+            // Navigate to course learning page
+        }
+
+        function enrollCourse(courseId) {
+            const course = [...enrolledCourses, ...availableCourses].find(c => c.id === courseId);
+            if (!course) return;
+
+            if (course.isFree) {
+                alert(`تم التسجيل في دورة "${course.title}" بنجاح! يمكنك البدء في التعلم الآن.`);
+                course.enrolled = true;
+                course.progress = 0;
+                if (!enrolledCourses.find(c => c.id === courseId)) {
+                    enrolledCourses.push(course);
+                }
+            } else {
+                // Simulate payment process
+                const confirmed = confirm(`هل تريد التسجيل في دورة "${course.title}" بمبلغ ${course.price} ج.م؟`);
+                if (confirmed) {
+                    alert('جاري تحويلك لصفحة الدفع...');
+                    // Process payment and enroll
+                }
+            }
+            
+            renderMyCourses();
+            renderBrowseCourses();
+            updateDashboardStats();
+        }
+
+        function toggleWishlist(courseId) {
+            const course = availableCourses.find(c => c.id === courseId);
+            if (course) {
+                course.inWishlist = !course.inWishlist;
+                renderBrowseCourses();
+                renderWishlist();
+                updateDashboardStats();
+                alert(course.inWishlist ? 'تمت الإضافة لقائمة الرغبات ❤️' : 'تمت الإزالة من قائمة الرغبات');
+            }
+        }
+
+        function removeFromWishlist(courseId) {
+            const course = availableCourses.find(c => c.id === courseId);
+            if (course) {
+                course.inWishlist = false;
+                renderWishlist();
+                renderBrowseCourses();
+                updateDashboardStats();
+                alert('تمت الإزالة من قائمة الرغبات');
+            }
+        }
+
+        function writeReview(courseId) {
+            const course = enrolledCourses.find(c => c.id === courseId);
+            if (!course) return;
+
+            const rating = prompt('قيم الدورة من 1 إلى 5 نجوم:');
+            if (!rating || rating < 1 || rating > 5) {
+                alert('يرجى إدخال تقييم صحيح من 1 إلى 5');
+                return;
+            }
+
+            const comment = prompt('اكتب تعليقك على الدورة:');
+            if (!comment || comment.trim() === '') {
+                alert('يرجى كتابة تعليق');
+                return;
+            }
+
+            const newReview = {
+                id: studentReviews.length + 1,
+                courseId: courseId,
+                courseName: course.title,
+                rating: parseInt(rating),
+                comment: comment,
+                date: new Date().toISOString().split('T')[0]
+            };
+
+            studentReviews.push(newReview);
+            renderReviews();
+            renderMyCourses();
+            updateDashboardStats();
+            alert('شكراً لك! تم إضافة تقييمك بنجاح ⭐');
+        }
+
+        function shareCourse(courseId) {
+            const course = [...enrolledCourses, ...availableCourses].find(c => c.id === courseId);
+            if (!course) return;
+
+            currentShareCourse = course;
+            document.getElementById('shareLink').value = `https://example.com/courses/${courseId}`;
+            document.getElementById('shareModal').classList.add('active');
+        }
+
+        function closeShareModal() {
+            document.getElementById('shareModal').classList.remove('active');
+            currentShareCourse = null;
+        }
+
+        function shareVia(platform) {
+            if (!currentShareCourse) return;
+
+            const url = encodeURIComponent(`https://example.com/courses/${currentShareCourse.id}`);
+            const text = encodeURIComponent(`تحقق من هذه الدورة الرائعة: ${currentShareCourse.title}`);
+
+            const urls = {
+                whatsapp: `https://wa.me/?text=${text}%20${url}`,
+                facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+                twitter: `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
+                telegram: `https://t.me/share/url?url=${url}&text=${text}`,
+                email: `mailto:?subject=${text}&body=${url}`,
+                linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${url}`
+            };
+
+            if (urls[platform]) {
+                window.open(urls[platform], '_blank');
+            }
+        }
+
+        function copyLink() {
+            const linkInput = document.getElementById('shareLink');
+            linkInput.select();
+            document.execCommand('copy');
+            alert('تم نسخ الرابط! 📋');
+        }
+
+        function retakeQuiz(attemptId) {
+            const attempt = quizAttempts.find(a => a.id === attemptId);
+            if (!attempt) return;
+
+            const confirmed = confirm(`هل تريد إعادة محاولة "${attempt.quizName}"؟`);
+            if (confirmed) {
+                alert('جاري فتح الاختبار...');
+                // Navigate to quiz page
+            }
+        }
+
+        function editProfile() {
+            alert(' 4.8,
+                reviews: 245,
+                progress: 65,
+                enrolled: true,
+                content: "30 درس فيديو + 15 اختبار",
+                duration: "40 ساعة"
+            },
+            {
+                id: 2,
+                title: "تصميم واجهات المستخدم UI/UX",
+                description: "اتقن فن تصميم واجهات مستخدم جذابة وسهلة الاستخدام",
+                instructor: "سارة علي",
+                category: "design",
+                price: 199.99,
+                isFree: false,
+                rating:
+				}
+    </script>
+	<!-- Edit Profile Section -->
+<section id="edit-profile" class="page-section">
+  <div class="page-header">
+    <h1 class="page-title">تعديل الملف الشخصي</h1>
+    <p class="page-subtitle">يمكنك تحديث بياناتك الشخصية هنا</p>
+  </div>
+
+  <div class="card">
+    <form id="editProfileForm" onsubmit="saveProfile(event)">
+      <div class="profile-picture-section">
+        <img id="editProfilePicture" src="" alt="Profile Picture" class="profile-picture" />
+        <br />
+        <input type="file" id="profileImageInput" accept="image/*" onchange="previewImage(event)" />
+      </div>
+
+      <div class="profile-grid">
+        <div class="profile-item">
+          <label class="profile-label">👤 الاسم الكامل</label>
+          <input type="text" id="editFullName" class="search-bar" required />
+        </div>
+        <div class="profile-item">
+          <label class="profile-label">🆔 الرقم القومي</label>
+          <input type="text" id="editNationalId" class="search-bar" required />
+        </div>
+        <div class="profile-item">
+          <label class="profile-label">📱 رقم الهاتف</label>
+          <input type="text" id="editPhone" class="search-bar" required />
+        </div>
+        <div class="profile-item">
+          <label class="profile-label">📧 البريد الإلكتروني</label>
+          <input type="email" id="editEmail" class="search-bar" required />
+        </div>
+        <div class="profile-item">
+          <label class="profile-label">📅 تاريخ الميلاد</label>
+          <input type="date" id="editDob" class="search-bar" required />
+        </div>
+        <div class="profile-item">
+          <label class="profile-label">📍 العنوان</label>
+          <input type="text" id="editAddress" class="search-bar" required />
+        </div>
+      </div>
+
+      <div style="margin-top: 25px; text-align: center;">
+        <button class="btn btn-primary" type="submit">💾 حفظ التغييرات</button>
+        <button class="btn btn-secondary" type="button" onclick="cancelEditProfile()">إلغاء</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- Course Details Section -->
+<section id="course-details" class="page-section">
+  <div class="page-header">
+    <h1 class="page-title" id="courseDetailsTitle">تفاصيل الدورة</h1>
+    <p class="page-subtitle">معلومات شاملة عن الدورة المختارة</p>
+  </div>
+
+  <div class="card" id="courseDetailsCard">
+    <div id="courseDetailsContent"></div>
+    <div style="margin-top: 20px; text-align: center;">
+      <button class="btn btn-secondary" onclick="backToCourses()">⬅️ رجوع إلى الدورات</button>
+    </div>
+  </div>
+</section>
+
+<!-- Toast Notification -->
+<div id="toast" style="
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #2d3748;
+  color: white;
+  padding: 15px 25px;
+  border-radius: 8px;
+  display: none;
+  z-index: 9999;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  font-size: 14px;
+"></div>
+
+<script>
+  // Toast Function
+  function showToast(message, duration = 3000) {
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.style.display = "block";
+    setTimeout(() => (toast.style.display = "none"), duration);
+  }
+
+  // Edit Profile Logic
+  function editProfile() {
+    showSection("edit-profile");
+    document.getElementById("editFullName").value = studentData.fullName;
+    document.getElementById("editNationalId").value = studentData.nationalId;
+    document.getElementById("editPhone").value = studentData.phone;
+    document.getElementById("editEmail").value = studentData.email;
+    document.getElementById("editDob").value = studentData.dateOfBirth;
+    document.getElementById("editAddress").value = studentData.address;
+    document.getElementById("editProfilePicture").src = studentData.picture;
+  }
+
+  function previewImage(event) {
+    const reader = new FileReader();
+    reader.onload = function() {
+      document.getElementById("editProfilePicture").src = reader.result;
+    };
+    reader.readAsDataURL(event.target.files[0]);
+  }
+
+  function saveProfile(event) {
+    event.preventDefault();
+    studentData.fullName = document.getElementById("editFullName").value;
+    studentData.nationalId = document.getElementById("editNationalId").value;
+    studentData.phone = document.getElementById("editPhone").value;
+    studentData.email = document.getElementById("editEmail").value;
+    studentData.dateOfBirth = document.getElementById("editDob").value;
+    studentData.address = document.getElementById("editAddress").value;
+    studentData.picture = document.getElementById("editProfilePicture").src;
+
+    loadProfileData();
+    showSection("profile");
+    showToast("✅ تم حفظ التغييرات بنجاح");
+  }
+
+  function cancelEditProfile() {
+    showSection("profile");
+    showToast("❎ تم إلغاء التعديل");
+  }
+
+  // Course Details Logic
+  function continueCourse(courseId) {
+    const course = [...enrolledCourses, ...availableCourses].find(c => c.id === courseId);
+    if (!course) return;
+    showSection("course-details");
+
+    document.getElementById("courseDetailsTitle").textContent = course.title;
+    document.getElementById("courseDetailsContent").innerHTML = `
+      <div style="text-align:center; margin-bottom:20px;">
+        <img src="https://via.placeholder.com/600x250/667eea/ffffff?text=${encodeURIComponent(course.title)}" style="border-radius:12px; max-width:100%; height:auto;">
+      </div>
+      <h3 style="color:#2d3748;">الوصف:</h3>
+      <p style="color:#4a5568; line-height:1.8;">${course.description}</p>
+      <h3 style="color:#2d3748; margin-top:15px;">تفاصيل الدورة:</h3>
+      <ul style="color:#4a5568; line-height:1.8;">
+        <li>👨‍🏫 المدرب: ${course.instructor}</li>
+        <li>⏱️ المدة: ${course.duration}</li>
+        <li>📘 المحتوى: ${course.content}</li>
+        <li>⭐ التقييم: ${course.rating} (${course.reviews} تقييم)</li>
+        <li>${course.isFree ? "🆓 مجانية" : "💰 السعر: " + course.price + " ج.م"}</li>
+      </ul>
+      <div style="margin-top:20px; text-align:center;">
+        <button class="btn btn-primary" onclick="startLearning(${course.id})">🚀 ابدأ التعلم</button>
+        <button class="btn btn-secondary" onclick="shareCourse(${course.id})">📤 مشاركة</button>
+      </div>
+    `;
+  }
+
+  function backToCourses() {
+    showSection("courses");
+  }
+
+  function startLearning(courseId) {
+    showToast("📚 جاري فتح محتوى الدورة...");
+    setTimeout(() => {
+      showToast("✅ تم فتح الدورة بنجاح!");
+    }, 2000);
+  }
+
+  // Replace all alert() calls
+  const originalAlert = window.alert;
+  window.alert = function(msg) {
+    showToast(msg);
+  };
+</script>
+</body>
+</html>
